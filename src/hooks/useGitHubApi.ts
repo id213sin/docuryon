@@ -2,7 +2,11 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useExplorerStore } from '@/store/useExplorerStore';
 import { getGitHubService } from '@/services/github';
 import { HIDDEN_PATTERNS } from '@/config/hidden-patterns';
+import { logDebug, logInfo, logError, logWarn } from '@/services/debug';
 import type { FileNode } from '@/types/file';
+
+let effectRunCount = 0;
+let lastEffectTime = Date.now();
 
 export function useGitHubApi() {
   const currentPath = useExplorerStore((state) => state.currentPath);
@@ -125,15 +129,44 @@ export function useGitHubApi() {
 
   // Load directory when path changes - use currentPath directly to avoid infinite loop
   useEffect(() => {
+    effectRunCount++;
+    const now = Date.now();
+    const timeSinceLastRun = now - lastEffectTime;
+    lastEffectTime = now;
+
+    logDebug('useGitHubApi', `Effect triggered #${effectRunCount}`, {
+      currentPath,
+      timeSinceLastRun,
+      isLoading: isLoadingRef.current,
+      filter: { showHidden: filter.showHidden, searchQuery: filter.searchQuery, fileTypes: filter.fileTypes },
+      sortField,
+      sortOrder,
+    });
+
+    // Detect rapid re-renders (potential infinite loop)
+    if (timeSinceLastRun < 50 && effectRunCount > 5) {
+      logWarn('useGitHubApi', `Rapid effect execution detected! Run #${effectRunCount}, ${timeSinceLastRun}ms since last run`, {
+        effectRunCount,
+        timeSinceLastRun,
+      });
+    }
+
     const loadData = async () => {
-      if (isLoadingRef.current) return;
+      if (isLoadingRef.current) {
+        logDebug('useGitHubApi', 'Skipping load - already loading');
+        return;
+      }
       isLoadingRef.current = true;
       setLoading(true);
       setError(null);
 
+      logInfo('useGitHubApi', `Loading directory: "${currentPath || '(root)'}"`, { currentPath });
+
       try {
         const githubService = getGitHubService();
+        logDebug('useGitHubApi', 'Fetching directory contents from GitHub API');
         const items = await githubService.getDirectoryContents(currentPath);
+        logDebug('useGitHubApi', `Received ${items.length} items from API`);
         // Apply filter and sort inline to avoid dependency on callbacks
         const filteredItems = (items as FileNode[]).filter(item => {
           if (!filter.showHidden) {
@@ -189,12 +222,21 @@ export function useGitHubApi() {
           return sortOrder === 'asc' ? comparison : -comparison;
         });
 
+        logInfo('useGitHubApi', `Directory loaded successfully: ${sortedItems.length} items`, {
+          path: currentPath,
+          totalItems: items.length,
+          filteredItems: filteredItems.length,
+          sortedItems: sortedItems.length,
+        });
         setCurrentItems(sortedItems);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'Failed to load directory');
+        const errorMessage = error instanceof Error ? error.message : 'Failed to load directory';
+        logError('useGitHubApi', `Failed to load directory: ${errorMessage}`, { error, currentPath });
+        setError(errorMessage);
       } finally {
         setLoading(false);
         isLoadingRef.current = false;
+        logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
       }
     };
 
@@ -203,13 +245,20 @@ export function useGitHubApi() {
 
   // Load full tree once on mount
   useEffect(() => {
-    if (hasLoadedTreeRef.current) return;
+    if (hasLoadedTreeRef.current) {
+      logDebug('useGitHubApi', 'Tree already loaded, skipping');
+      return;
+    }
     hasLoadedTreeRef.current = true;
+    logInfo('useGitHubApi', 'Loading full file tree on mount');
 
     const loadTree = async () => {
       try {
         const githubService = getGitHubService();
+        logDebug('useGitHubApi', 'Fetching full tree from GitHub API');
         const tree = await githubService.getFullTree();
+        logDebug('useGitHubApi', `Received ${tree.length} tree items`);
+
         const filteredTree = tree.filter(node => {
           return !HIDDEN_PATTERNS.some(pattern => {
             if (typeof pattern === 'string') {
@@ -218,9 +267,14 @@ export function useGitHubApi() {
             return pattern.test(node.name) || pattern.test(node.path);
           });
         });
+
+        logInfo('useGitHubApi', `File tree loaded: ${filteredTree.length} items after filtering`, {
+          total: tree.length,
+          filtered: filteredTree.length,
+        });
         setFileTree(filteredTree);
       } catch (error) {
-        console.error('Failed to load file tree:', error);
+        logError('useGitHubApi', 'Failed to load file tree', { error });
         hasLoadedTreeRef.current = false; // Allow retry on error
       }
     };

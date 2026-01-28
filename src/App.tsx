@@ -3,17 +3,30 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { MainContent } from '@/components/layout/MainContent';
 import { StatusBar } from '@/components/layout/StatusBar';
 import { PreviewPanel } from '@/components/preview/PreviewPanel';
+import { ErrorBoundary, DebugPanel } from '@/components/common';
 import { useTheme } from '@/hooks/useTheme';
 import { useExplorerStore } from '@/store/useExplorerStore';
 import { initGitHubService } from '@/services/github';
+import { logInfo, logDebug } from '@/services/debug';
 import { GITHUB_CONFIG } from '@/config/app.config';
 
-// Initialize GitHub service at module level (before any component renders)
-initGitHubService(GITHUB_CONFIG);
+// Log app initialization
+logInfo('App', 'Docuryon initializing', {
+  userAgent: navigator.userAgent,
+  url: window.location.href,
+  timestamp: new Date().toISOString(),
+});
 
-function App() {
+// Initialize GitHub service at module level (before any component renders)
+logDebug('App', 'Initializing GitHub service', { config: GITHUB_CONFIG });
+initGitHubService(GITHUB_CONFIG);
+logInfo('App', 'GitHub service initialized');
+
+function AppContent() {
   const { isSidebarOpen, isPreviewOpen, previewFile } = useExplorerStore();
   useTheme();
+
+  logDebug('App', 'AppContent rendering', { isSidebarOpen, isPreviewOpen, hasPreviewFile: !!previewFile });
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground">
@@ -40,7 +53,18 @@ function App() {
       </div>
 
       <StatusBar />
+
+      {/* Debug Panel - always visible for debugging */}
+      <DebugPanel defaultOpen={false} position="bottom-right" />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 

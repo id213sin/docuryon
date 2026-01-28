@@ -1,5 +1,6 @@
 import type { GitHubConfig, GitHubContentResponse, GitHubTreeResponse, GitHubTreeItem } from '@/types/github';
 import type { FileNode, FileSystemItem } from '@/types/file';
+import { logDebug, logInfo, logError } from '@/services/debug';
 
 // Default GitHub URLs
 const DEFAULT_API_URL = 'https://api.github.com';
@@ -28,57 +29,83 @@ export class GitHubService {
     const fullPath = this.buildPath(path);
     const cacheKey = `contents:${fullPath}`;
 
+    logDebug('GitHubService', `getDirectoryContents called`, { path, fullPath });
+
     const cached = this.getFromCache<FileSystemItem[]>(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+      logDebug('GitHubService', `Cache hit for directory contents`, { fullPath, itemCount: cached.length });
+      return cached;
+    }
 
     const url = `${this.baseApiUrl}/contents/${fullPath}?ref=${this.config.branch}`;
+    logDebug('GitHubService', `Fetching from GitHub API`, { url });
 
     try {
       const response = await fetch(url, {
         headers: this.getHeaders()
       });
 
+      logDebug('GitHubService', `API response received`, { status: response.status, ok: response.ok });
+
       if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`);
+        const errorMsg = `GitHub API error: ${response.status}`;
+        logError('GitHubService', errorMsg, { url, status: response.status });
+        throw new Error(errorMsg);
       }
 
       const data: GitHubContentResponse[] = await response.json();
+      logDebug('GitHubService', `Parsed ${data.length} items from API response`);
+
       const items = this.transformContentResponse(data);
 
       this.setCache(cacheKey, items);
+      logInfo('GitHubService', `Directory contents loaded and cached`, { fullPath, itemCount: items.length });
 
       return items;
     } catch (error) {
-      console.error('Error fetching directory contents:', error);
+      logError('GitHubService', 'Error fetching directory contents', { error, url, fullPath });
       throw error;
     }
   }
 
   async getFullTree(): Promise<FileNode[]> {
     const cacheKey = 'fullTree';
+    logDebug('GitHubService', 'getFullTree called');
+
     const cached = this.getFromCache<FileNode[]>(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+      logDebug('GitHubService', `Cache hit for full tree`, { nodeCount: cached.length });
+      return cached;
+    }
 
     try {
       const refUrl = `${this.baseApiUrl}/git/ref/heads/${this.config.branch}`;
+      logDebug('GitHubService', 'Fetching git ref', { refUrl });
+
       const refResponse = await fetch(refUrl, { headers: this.getHeaders() });
       const refData = await refResponse.json();
       const treeSha = refData.object.sha;
+      logDebug('GitHubService', 'Got tree SHA', { treeSha });
 
       const treeUrl = `${this.baseApiUrl}/git/trees/${treeSha}?recursive=1`;
+      logDebug('GitHubService', 'Fetching full tree', { treeUrl });
+
       const treeResponse = await fetch(treeUrl, { headers: this.getHeaders() });
       const treeData: GitHubTreeResponse = await treeResponse.json();
+      logDebug('GitHubService', `Received ${treeData.tree.length} items in tree`);
 
       const filteredItems = treeData.tree.filter(item =>
         item.path.startsWith(this.config.basePath + '/')
       );
+      logDebug('GitHubService', `Filtered to ${filteredItems.length} items in basePath`);
 
       const tree = this.buildTreeFromFlatList(filteredItems);
       this.setCache(cacheKey, tree);
+      logInfo('GitHubService', 'Full tree loaded and cached', { nodeCount: tree.length });
 
       return tree;
     } catch (error) {
-      console.error('Error fetching full tree:', error);
+      logError('GitHubService', 'Error fetching full tree', { error });
       throw error;
     }
   }
@@ -188,15 +215,26 @@ let instance: GitHubService | null = null;
 
 export function getGitHubService(config?: GitHubConfig): GitHubService {
   if (!instance && config) {
+    logDebug('GitHubService', 'Creating new instance with provided config');
     instance = new GitHubService(config);
   }
   if (!instance) {
-    throw new Error('GitHubService not initialized');
+    const error = new Error('GitHubService not initialized');
+    logError('GitHubService', 'Service not initialized when getGitHubService called', { error });
+    throw error;
   }
   return instance;
 }
 
 export function initGitHubService(config: GitHubConfig): GitHubService {
+  logInfo('GitHubService', 'Initializing service', {
+    owner: config.owner,
+    repo: config.repo,
+    branch: config.branch,
+    basePath: config.basePath,
+    apiUrl: config.apiUrl || DEFAULT_API_URL,
+    rawUrl: config.rawUrl || DEFAULT_RAW_URL,
+  });
   instance = new GitHubService(config);
   return instance;
 }
