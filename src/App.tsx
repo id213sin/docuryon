@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MainContent } from '@/components/layout/MainContent';
@@ -9,13 +8,12 @@ import { useExplorerStore } from '@/store/useExplorerStore';
 import { initGitHubService } from '@/services/github';
 import { GITHUB_CONFIG } from '@/config/app.config';
 
+// Initialize GitHub service at module level (before any component renders)
+initGitHubService(GITHUB_CONFIG);
+
 function App() {
   const { isSidebarOpen, isPreviewOpen, previewFile } = useExplorerStore();
   useTheme();
-
-  useEffect(() => {
-    initGitHubService(GITHUB_CONFIG);
-  }, []);
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground">
