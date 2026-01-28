@@ -116,6 +116,30 @@ export const GITHUB_CONFIG: GitHubConfig = {
 };
 ```
 
+#### GitHub Enterprise Server
+
+For organizations using GitHub Enterprise Server, configure the custom API and raw content URLs:
+
+```typescript
+export const GITHUB_CONFIG: GitHubConfig = {
+  owner: 'my-team',
+  repo: 'internal-docs',
+  branch: 'main',
+  basePath: 'docs',
+
+  // GitHub Enterprise Server URLs
+  apiUrl: 'https://github.your-company.com/api/v3',
+  rawUrl: 'https://github.your-company.com/raw'
+};
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `apiUrl` | GitHub API base URL | `https://api.github.com` |
+| `rawUrl` | Raw content base URL | `https://raw.githubusercontent.com` |
+
+> **Note**: For GitHub Enterprise Cloud, you typically don't need to change these URLs. Only configure them for self-hosted GitHub Enterprise Server installations.
+
 ### Hidden Files Configuration
 
 Edit `src/config/hidden-patterns.ts` to customize which files are hidden from the explorer:
