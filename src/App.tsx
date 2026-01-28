@@ -53,18 +53,20 @@ function AppContent() {
       </div>
 
       <StatusBar />
-
-      {/* Debug Panel - always visible for debugging */}
-      <DebugPanel defaultOpen={false} position="bottom-right" />
     </div>
   );
 }
 
 function App() {
   return (
-    <ErrorBoundary>
-      <AppContent />
-    </ErrorBoundary>
+    <>
+      {/* Debug Panel rendered outside ErrorBoundary via portal - always accessible */}
+      <DebugPanel defaultOpen={false} position="bottom-right" />
+
+      <ErrorBoundary>
+        <AppContent />
+      </ErrorBoundary>
+    </>
   );
 }
 
