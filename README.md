@@ -40,19 +40,6 @@ npm install
 npm run dev
 ```
 
-### Configuration
-
-Edit `src/config/app.config.ts` to configure your GitHub repository:
-
-```typescript
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'YOUR_GITHUB_USERNAME',
-  repo: 'YOUR_REPO_NAME',
-  branch: 'main',
-  basePath: 'trunk'
-};
-```
-
 ### Building for Production
 
 ```bash
@@ -61,22 +48,163 @@ npm run build
 
 The build output will be in the `dist/` folder.
 
+## Configuration
+
+### GitHub Repository Settings
+
+Edit `src/config/app.config.ts` to configure your GitHub repository:
+
+```typescript
+import type { GitHubConfig } from '@/types/github';
+
+export const GITHUB_CONFIG: GitHubConfig = {
+  owner: 'YOUR_GITHUB_USERNAME',  // GitHub username or organization
+  repo: 'YOUR_REPO_NAME',         // Repository name
+  branch: 'main',                  // Branch to read files from
+  basePath: 'trunk'                // Folder containing your documents
+};
+
+export const APP_CONFIG = {
+  appName: 'Docuryon',             // Application title shown in header
+  defaultViewMode: 'grid',         // Default view: 'grid' or 'list'
+  thumbnailEnabled: true,          // Enable thumbnail generation
+  thumbnailSize: {
+    width: 120,
+    height: 160
+  },
+  previewPanelWidth: 400,          // Preview panel width in pixels
+  maxFilePreviewSize: 5 * 1024 * 1024,  // Max file size for preview (5MB)
+  supportedPreviewTypes: [
+    'md', 'txt', 'html', 'css', 'js', 'ts', 'json', 'xml',
+    'pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'
+  ]
+};
+```
+
+### Example Configurations
+
+#### Personal Documentation Site
+
+```typescript
+export const GITHUB_CONFIG: GitHubConfig = {
+  owner: 'johndoe',
+  repo: 'my-docs',
+  branch: 'main',
+  basePath: 'documents'
+};
+```
+
+#### Organization Knowledge Base
+
+```typescript
+export const GITHUB_CONFIG: GitHubConfig = {
+  owner: 'my-company',
+  repo: 'knowledge-base',
+  branch: 'main',
+  basePath: 'docs'
+};
+```
+
+#### Project Documentation with Multiple Branches
+
+```typescript
+export const GITHUB_CONFIG: GitHubConfig = {
+  owner: 'my-org',
+  repo: 'project-docs',
+  branch: 'docs',  // Separate documentation branch
+  basePath: 'content'
+};
+```
+
+### Hidden Files Configuration
+
+Edit `src/config/hidden-patterns.ts` to customize which files are hidden from the explorer:
+
+```typescript
+export const HIDDEN_PATTERNS: (string | RegExp)[] = [
+  // Hide specific files
+  'package.json',
+  'tsconfig.json',
+
+  // Hide directories
+  'node_modules',
+  'dist',
+  '.git',
+
+  // Hide files starting with dot
+  /^\./,
+
+  // Hide TypeScript declaration files
+  /\.d\.ts$/,
+];
+```
+
 ## Document Storage
 
-Store your documents in the `trunk/` folder. The explorer will automatically display them, hiding all application files.
+Store your documents in the `trunk/` folder (or whatever `basePath` you configured). The explorer will automatically display them while hiding all application files.
+
+### Recommended Folder Structure
 
 ```
 trunk/
-├── projects/
-│   └── project-a/
-├── images/
-├── notes/
-└── README.md
+├── projects/           # Project documentation
+│   ├── project-a/
+│   │   ├── README.md
+│   │   ├── specs/
+│   │   └── diagrams/
+│   └── project-b/
+├── images/             # Image assets
+│   ├── screenshots/
+│   └── diagrams/
+├── notes/              # Personal notes
+│   └── meeting-notes/
+├── templates/          # Document templates
+└── README.md           # Root documentation
 ```
+
+### Sample Content
+
+The `trunk/` folder includes sample content to demonstrate the explorer:
+
+- `trunk/README.md` - Welcome document with feature overview
+- `trunk/notes/welcome.md` - Sample Markdown file showing preview features
+- `trunk/projects/sample-config.json` - Sample JSON file to demonstrate code preview
+
+These files are for demonstration purposes and can be replaced with your own content.
 
 ## Deployment
 
-This project includes a GitHub Actions workflow for automatic deployment to GitHub Pages. Push to the `main` branch to trigger deployment.
+### GitHub Pages (Recommended)
+
+This project includes a GitHub Actions workflow for automatic deployment:
+
+1. Push your changes to the `main` branch
+2. Go to repository **Settings** > **Pages**
+3. Set source to **GitHub Actions**
+4. The site will be available at `https://USERNAME.github.io/REPO_NAME/`
+
+### Manual Deployment
+
+```bash
+# Build the project
+npm run build
+
+# The dist/ folder can be deployed to any static hosting service
+```
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `Arrow Up/Down` | Navigate between items |
+| `Enter` | Open file/folder |
+| `Backspace` | Go to parent folder |
+| `Ctrl/Cmd + Left` | Navigate back |
+| `Ctrl/Cmd + Right` | Navigate forward |
+| `Ctrl/Cmd + A` | Select all items |
+| `Escape` | Clear selection |
+| `Home` | Jump to first item |
+| `End` | Jump to last item |
 
 ## Technology Stack
 
@@ -90,6 +218,15 @@ This project includes a GitHub Actions workflow for automatic deployment to GitH
 - **Marked** - Markdown Rendering
 - **Highlight.js** - Code Highlighting
 - **PDF.js** - PDF Preview
+
+## API Rate Limits
+
+Docuryon uses the GitHub REST API to fetch files. Be aware of rate limits:
+
+- **Without authentication**: 60 requests/hour
+- **With authentication**: 5,000 requests/hour
+
+For high-traffic sites, consider implementing GitHub token authentication.
 
 ## License
 
