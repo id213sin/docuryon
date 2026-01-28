@@ -129,8 +129,8 @@ export function useGitHubApi() {
 
   // Load directory when path changes - use currentPath directly to avoid infinite loop
   useEffect(() => {
-    // Track if this effect instance is still mounted
-    let isMounted = true;
+    // Use AbortController pattern for proper cleanup
+    const abortController = new AbortController();
 
     effectRunCount++;
     const now = Date.now();
@@ -155,11 +155,7 @@ export function useGitHubApi() {
     }
 
     const loadData = async () => {
-      // Skip if already loading (but always continue for new effect instances)
-      if (isLoadingRef.current) {
-        logDebug('useGitHubApi', 'Skipping load - already loading');
-        return;
-      }
+      // Always start fresh load for each effect instance (important for StrictMode)
       isLoadingRef.current = true;
       setLoading(true);
       setError(null);
@@ -171,9 +167,9 @@ export function useGitHubApi() {
         logDebug('useGitHubApi', 'Fetching directory contents from GitHub API');
         const items = await githubService.getDirectoryContents(currentPath);
 
-        // Check if still mounted before updating state
-        if (!isMounted) {
-          logDebug('useGitHubApi', 'Component unmounted, skipping directory update');
+        // Check if this effect was cleaned up
+        if (abortController.signal.aborted) {
+          logDebug('useGitHubApi', 'Effect aborted, skipping directory update');
           return;
         }
 
@@ -240,17 +236,16 @@ export function useGitHubApi() {
           sortedItems: sortedItems.length,
         });
         setCurrentItems(sortedItems);
+        setLoading(false);
+        isLoadingRef.current = false;
+        logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
       } catch (error) {
-        if (isMounted) {
+        if (!abortController.signal.aborted) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to load directory';
           logError('useGitHubApi', `Failed to load directory: ${errorMessage}`, { error, currentPath });
           setError(errorMessage);
-        }
-      } finally {
-        if (isMounted) {
           setLoading(false);
           isLoadingRef.current = false;
-          logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
         }
       }
     };
@@ -258,16 +253,17 @@ export function useGitHubApi() {
     loadData();
 
     return () => {
-      isMounted = false;
+      abortController.abort();
+      // Reset loading state on cleanup to allow next mount to load
+      isLoadingRef.current = false;
     };
   }, [currentPath, filter.showHidden, filter.searchQuery, filter.fileTypes, sortField, sortOrder, setCurrentItems, setLoading, setError]);
 
   // Load full tree once on mount
   useEffect(() => {
-    // Track if this effect instance is still mounted
-    let isMounted = true;
+    const abortController = new AbortController();
 
-    // Skip if already loaded (for HMR and non-StrictMode)
+    // Skip if already loaded (for HMR and production)
     if (hasLoadedTreeRef.current) {
       logDebug('useGitHubApi', 'Tree already loaded, skipping');
       return;
@@ -281,9 +277,9 @@ export function useGitHubApi() {
         logDebug('useGitHubApi', 'Fetching full tree from GitHub API');
         const tree = await githubService.getFullTree();
 
-        // Check if still mounted before updating state
-        if (!isMounted) {
-          logDebug('useGitHubApi', 'Component unmounted, skipping tree update');
+        // Check if this effect was cleaned up
+        if (abortController.signal.aborted) {
+          logDebug('useGitHubApi', 'Effect aborted, skipping tree update');
           return;
         }
 
@@ -305,7 +301,7 @@ export function useGitHubApi() {
         setFileTree(filteredTree);
         hasLoadedTreeRef.current = true; // Mark as loaded only after success
       } catch (error) {
-        if (isMounted) {
+        if (!abortController.signal.aborted) {
           logError('useGitHubApi', 'Failed to load file tree', { error });
           // Don't set hasLoadedTreeRef to allow retry
         }
@@ -315,7 +311,7 @@ export function useGitHubApi() {
     loadTree();
 
     return () => {
-      isMounted = false;
+      abortController.abort();
     };
   }, [setFileTree]);
 
