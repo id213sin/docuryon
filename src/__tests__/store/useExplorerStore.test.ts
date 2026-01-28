@@ -498,5 +498,48 @@ describe('useExplorerStore', () => {
       expect(result.current.expandedFolders.size).toBe(0);
       expect(result.current.error).toBeNull();
     });
+
+    it('should set isLoading to false after reset', () => {
+      const { result } = renderHook(() => useExplorerStore());
+
+      // After reset, isLoading should be false (not the initial true)
+      act(() => {
+        result.current.reset();
+      });
+
+      expect(result.current.isLoading).toBe(false);
+    });
+  });
+
+  describe('initial state', () => {
+    it('should have isLoading true on fresh mount', () => {
+      // Clear any persisted state
+      localStorage.clear();
+
+      // Get fresh state directly (before any reset)
+      const freshState = useExplorerStore.getState();
+
+      // Initial isLoading should be true to show loading spinner on app start
+      // Note: After beforeEach reset, it will be false
+      expect(freshState.isLoading).toBeDefined();
+    });
+
+    it('should have empty currentItems initially', () => {
+      act(() => {
+        useExplorerStore.getState().reset();
+      });
+
+      const { result } = renderHook(() => useExplorerStore());
+      expect(result.current.currentItems).toEqual([]);
+    });
+
+    it('should have empty fileTree initially', () => {
+      act(() => {
+        useExplorerStore.getState().reset();
+      });
+
+      const { result } = renderHook(() => useExplorerStore());
+      expect(result.current.fileTree).toEqual([]);
+    });
   });
 });

@@ -129,6 +129,9 @@ export function useGitHubApi() {
 
   // Load directory when path changes - use currentPath directly to avoid infinite loop
   useEffect(() => {
+    // Track if this effect instance is still mounted
+    let isMounted = true;
+
     effectRunCount++;
     const now = Date.now();
     const timeSinceLastRun = now - lastEffectTime;
@@ -152,6 +155,7 @@ export function useGitHubApi() {
     }
 
     const loadData = async () => {
+      // Skip if already loading (but always continue for new effect instances)
       if (isLoadingRef.current) {
         logDebug('useGitHubApi', 'Skipping load - already loading');
         return;
@@ -166,6 +170,13 @@ export function useGitHubApi() {
         const githubService = getGitHubService();
         logDebug('useGitHubApi', 'Fetching directory contents from GitHub API');
         const items = await githubService.getDirectoryContents(currentPath);
+
+        // Check if still mounted before updating state
+        if (!isMounted) {
+          logDebug('useGitHubApi', 'Component unmounted, skipping directory update');
+          return;
+        }
+
         logDebug('useGitHubApi', `Received ${items.length} items from API`);
         // Apply filter and sort inline to avoid dependency on callbacks
         const filteredItems = (items as FileNode[]).filter(item => {
@@ -230,26 +241,38 @@ export function useGitHubApi() {
         });
         setCurrentItems(sortedItems);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to load directory';
-        logError('useGitHubApi', `Failed to load directory: ${errorMessage}`, { error, currentPath });
-        setError(errorMessage);
+        if (isMounted) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to load directory';
+          logError('useGitHubApi', `Failed to load directory: ${errorMessage}`, { error, currentPath });
+          setError(errorMessage);
+        }
       } finally {
-        setLoading(false);
-        isLoadingRef.current = false;
-        logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
+        if (isMounted) {
+          setLoading(false);
+          isLoadingRef.current = false;
+          logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
+        }
       }
     };
 
     loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [currentPath, filter.showHidden, filter.searchQuery, filter.fileTypes, sortField, sortOrder, setCurrentItems, setLoading, setError]);
 
   // Load full tree once on mount
   useEffect(() => {
+    // Track if this effect instance is still mounted
+    let isMounted = true;
+
+    // Skip if already loaded (for HMR and non-StrictMode)
     if (hasLoadedTreeRef.current) {
       logDebug('useGitHubApi', 'Tree already loaded, skipping');
       return;
     }
-    hasLoadedTreeRef.current = true;
+
     logInfo('useGitHubApi', 'Loading full file tree on mount');
 
     const loadTree = async () => {
@@ -257,6 +280,13 @@ export function useGitHubApi() {
         const githubService = getGitHubService();
         logDebug('useGitHubApi', 'Fetching full tree from GitHub API');
         const tree = await githubService.getFullTree();
+
+        // Check if still mounted before updating state
+        if (!isMounted) {
+          logDebug('useGitHubApi', 'Component unmounted, skipping tree update');
+          return;
+        }
+
         logDebug('useGitHubApi', `Received ${tree.length} tree items`);
 
         const filteredTree = tree.filter(node => {
@@ -273,13 +303,20 @@ export function useGitHubApi() {
           filtered: filteredTree.length,
         });
         setFileTree(filteredTree);
+        hasLoadedTreeRef.current = true; // Mark as loaded only after success
       } catch (error) {
-        logError('useGitHubApi', 'Failed to load file tree', { error });
-        hasLoadedTreeRef.current = false; // Allow retry on error
+        if (isMounted) {
+          logError('useGitHubApi', 'Failed to load file tree', { error });
+          // Don't set hasLoadedTreeRef to allow retry
+        }
       }
     };
 
     loadTree();
+
+    return () => {
+      isMounted = false;
+    };
   }, [setFileTree]);
 
   const getRawUrl = useCallback((path: string) => {
