@@ -67,7 +67,7 @@ const initialState = {
   historyIndex: 0,
   fileTree: [] as FileNode[],
   currentItems: [] as FileNode[],
-  isLoading: false,
+  isLoading: true,  // Start with loading true to show spinner until first data load
   error: null as string | null,
   selectedItems: new Set<string>(),
   focusedItem: null as string | null,
@@ -179,6 +179,7 @@ export const useExplorerStore = create<ExplorerState>()(
 
       reset: () => set({
         ...initialState,
+        isLoading: false,  // Reset to not loading when explicitly reset
         selectedItems: new Set(),
         expandedFolders: new Set()
       })
