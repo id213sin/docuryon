@@ -1,15 +1,22 @@
 import type { GitHubConfig, GitHubContentResponse, GitHubTreeResponse, GitHubTreeItem } from '@/types/github';
 import type { FileNode, FileSystemItem } from '@/types/file';
 
+// Default GitHub URLs
+const DEFAULT_API_URL = 'https://api.github.com';
+const DEFAULT_RAW_URL = 'https://raw.githubusercontent.com';
+
 export class GitHubService {
   private config: GitHubConfig;
   private baseApiUrl: string;
+  private rawBaseUrl: string;
   private cache: Map<string, { data: unknown; timestamp: number }>;
   private cacheTTL: number = 5 * 60 * 1000; // 5 minutes
 
   constructor(config: GitHubConfig) {
     this.config = config;
-    this.baseApiUrl = `https://api.github.com/repos/${config.owner}/${config.repo}`;
+    const apiUrl = config.apiUrl || DEFAULT_API_URL;
+    this.baseApiUrl = `${apiUrl}/repos/${config.owner}/${config.repo}`;
+    this.rawBaseUrl = config.rawUrl || DEFAULT_RAW_URL;
     this.cache = new Map();
   }
 
@@ -96,7 +103,7 @@ export class GitHubService {
 
   getRawUrl(path: string): string {
     const fullPath = this.buildPath(path);
-    return `https://raw.githubusercontent.com/${this.config.owner}/${this.config.repo}/${this.config.branch}/${fullPath}`;
+    return `${this.rawBaseUrl}/${this.config.owner}/${this.config.repo}/${this.config.branch}/${fullPath}`;
   }
 
   private buildPath(path: string): string {

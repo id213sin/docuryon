@@ -3,6 +3,10 @@ export interface GitHubConfig {
   repo: string;
   branch: string;
   basePath: string;
+  /** GitHub API base URL (optional, defaults to https://api.github.com) */
+  apiUrl?: string;
+  /** GitHub raw content URL (optional, defaults to https://raw.githubusercontent.com) */
+  rawUrl?: string;
 }
 
 export interface GitHubContentResponse {
