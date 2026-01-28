@@ -1,0 +1,2070 @@
+{
+  "exported": "2026-01-28T09:44:45.399Z",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+  "url": "https://id213sin.github.io/docuryon/",
+  "logs": [
+    {
+      "id": "1769593308177-vx45j4q08",
+      "timestamp": "2026-01-28T09:41:48.177Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593308178-isndoui6b",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593308178-x61q3pcuc",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593308178-cyo7z488q",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593308178-v5oep5tw7",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593308178-toxikq63a",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #2",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 2,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593308178-pjv04xrn6",
+      "timestamp": "2026-01-28T09:41:48.178Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593308179-ytuxkwak9",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593308179-7h8ld9njo",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593308179-flp0wpn9f",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593308179-zol7sb7vk",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593308179-bvqc9qe68",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593308179-zhl20fnl1",
+      "timestamp": "2026-01-28T09:41:48.179Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593308180-zf018eips",
+      "timestamp": "2026-01-28T09:41:48.180Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593308181-q8zd5lcvb",
+      "timestamp": "2026-01-28T09:41:48.181Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308440-n040sj7ai",
+      "timestamp": "2026-01-28T09:41:48.440Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308442-5lhb9gvis",
+      "timestamp": "2026-01-28T09:41:48.442Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593308443-y4bgfjx1z",
+      "timestamp": "2026-01-28T09:41:48.443Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 items"
+    },
+    {
+      "id": "1769593308449-thzh4kyli",
+      "timestamp": "2026-01-28T09:41:48.449Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 2 items",
+      "data": {
+        "path": "",
+        "totalItems": 3,
+        "filteredItems": 2,
+        "sortedItems": 2
+      }
+    },
+    {
+      "id": "1769593308450-dxplv9xlb",
+      "timestamp": "2026-01-28T09:41:48.450Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593308451-jbj2a4sqi",
+      "timestamp": "2026-01-28T09:41:48.451Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308460-v3ke1m4fv",
+      "timestamp": "2026-01-28T09:41:48.460Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #3",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 282,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593308460-ymlkm6x3c",
+      "timestamp": "2026-01-28T09:41:48.460Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593308461-og1t0fnk9",
+      "timestamp": "2026-01-28T09:41:48.461Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593308461-9d9gwaoh7",
+      "timestamp": "2026-01-28T09:41:48.461Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593308461-6ti4fj3os",
+      "timestamp": "2026-01-28T09:41:48.461Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593308462-ejropb0vf",
+      "timestamp": "2026-01-28T09:41:48.462Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593308462-zbrg8at3j",
+      "timestamp": "2026-01-28T09:41:48.462Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593308462-odcx8j2s9",
+      "timestamp": "2026-01-28T09:41:48.462Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593308463-9t79stb1v",
+      "timestamp": "2026-01-28T09:41:48.463Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593308464-cicn8o4jq",
+      "timestamp": "2026-01-28T09:41:48.464Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308466-nf1ptke1i",
+      "timestamp": "2026-01-28T09:41:48.466Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593308469-48stmwg7w",
+      "timestamp": "2026-01-28T09:41:48.469Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308469-okma12f82",
+      "timestamp": "2026-01-28T09:41:48.469Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308469-uuockpjw8",
+      "timestamp": "2026-01-28T09:41:48.469Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 tree items"
+    },
+    {
+      "id": "1769593308469-cuo4nsky0",
+      "timestamp": "2026-01-28T09:41:48.469Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "File tree loaded: 2 items after filtering",
+      "data": {
+        "total": 3,
+        "filtered": 2
+      }
+    },
+    {
+      "id": "1769593308470-csib3zz5s",
+      "timestamp": "2026-01-28T09:41:48.470Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308471-ru360z23w",
+      "timestamp": "2026-01-28T09:41:48.471Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308472-htn3dlj46",
+      "timestamp": "2026-01-28T09:41:48.472Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593308472-gk6hau0f7",
+      "timestamp": "2026-01-28T09:41:48.472Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 items"
+    },
+    {
+      "id": "1769593308472-mxu5tu5cg",
+      "timestamp": "2026-01-28T09:41:48.472Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 2 items",
+      "data": {
+        "path": "",
+        "totalItems": 3,
+        "filteredItems": 2,
+        "sortedItems": 2
+      }
+    },
+    {
+      "id": "1769593308472-bl6a41kpp",
+      "timestamp": "2026-01-28T09:41:48.472Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593308473-f2o0rddb8",
+      "timestamp": "2026-01-28T09:41:48.473Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308474-b5qpg5q7g",
+      "timestamp": "2026-01-28T09:41:48.474Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #4",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 14,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593308475-m5g1f30e2",
+      "timestamp": "2026-01-28T09:41:48.475Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593308478-57brmw61t",
+      "timestamp": "2026-01-28T09:41:48.478Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593308478-j834fyrdf",
+      "timestamp": "2026-01-28T09:41:48.478Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593308479-kqaeb4b3b",
+      "timestamp": "2026-01-28T09:41:48.479Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593308479-ac9yt8n9y",
+      "timestamp": "2026-01-28T09:41:48.479Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593308480-7r56j585w",
+      "timestamp": "2026-01-28T09:41:48.480Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593308480-35321kp4l",
+      "timestamp": "2026-01-28T09:41:48.480Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593308480-e4gjx17h2",
+      "timestamp": "2026-01-28T09:41:48.480Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for full tree",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308481-orxx4cs01",
+      "timestamp": "2026-01-28T09:41:48.481Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308483-lbya94bje",
+      "timestamp": "2026-01-28T09:41:48.483Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593308484-ffchh2irh",
+      "timestamp": "2026-01-28T09:41:48.484Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    },
+    {
+      "id": "1769593308484-3pun07k34",
+      "timestamp": "2026-01-28T09:41:48.484Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308484-61wxfij4c",
+      "timestamp": "2026-01-28T09:41:48.484Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308485-sxp2x9e6z",
+      "timestamp": "2026-01-28T09:41:48.485Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 tree items"
+    },
+    {
+      "id": "1769593308485-o92o7ueqm",
+      "timestamp": "2026-01-28T09:41:48.485Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "File tree loaded: 2 items after filtering",
+      "data": {
+        "total": 3,
+        "filtered": 2
+      }
+    },
+    {
+      "id": "1769593308485-old6j68d1",
+      "timestamp": "2026-01-28T09:41:48.485Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593308491-829tj7eyr",
+      "timestamp": "2026-01-28T09:41:48.491Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308491-0j2hrqcm2",
+      "timestamp": "2026-01-28T09:41:48.491Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593308492-aubjnaitk",
+      "timestamp": "2026-01-28T09:41:48.492Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    },
+    {
+      "id": "1769593311162-zowgbh2or",
+      "timestamp": "2026-01-28T09:41:51.162Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593311167-gyei2o6nf",
+      "timestamp": "2026-01-28T09:41:51.167Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #5",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 2693,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593311168-r90di1ksm",
+      "timestamp": "2026-01-28T09:41:51.168Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593311169-372nd8e83",
+      "timestamp": "2026-01-28T09:41:51.169Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593311170-mvy76h7m0",
+      "timestamp": "2026-01-28T09:41:51.170Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593311170-wx5dxy4t0",
+      "timestamp": "2026-01-28T09:41:51.170Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593311171-us0ux4lb2",
+      "timestamp": "2026-01-28T09:41:51.171Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #6",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 4,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593311171-c5c5wd5hr",
+      "timestamp": "2026-01-28T09:41:51.171Z",
+      "level": "warn",
+      "category": "useLocalFiles",
+      "message": "Rapid effect execution detected! Run #6, 4ms since last run",
+      "data": {
+        "effectRunCount": 6,
+        "timeSinceLastRun": 4
+      }
+    },
+    {
+      "id": "1769593311172-nv649ckdi",
+      "timestamp": "2026-01-28T09:41:51.172Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593311172-2z509cuzh",
+      "timestamp": "2026-01-28T09:41:51.172Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593311173-z197we0hb",
+      "timestamp": "2026-01-28T09:41:51.173Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593311173-d7ihytu0f",
+      "timestamp": "2026-01-28T09:41:51.173Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593311174-5z8xiyh28",
+      "timestamp": "2026-01-28T09:41:51.174Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593311176-0wqrbid7e",
+      "timestamp": "2026-01-28T09:41:51.176Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 1 items"
+    },
+    {
+      "id": "1769593311176-qkv7nlfx9",
+      "timestamp": "2026-01-28T09:41:51.176Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 1 items",
+      "data": {
+        "path": "projects",
+        "totalItems": 1,
+        "filteredItems": 1,
+        "sortedItems": 1
+      }
+    },
+    {
+      "id": "1769593311177-mucz2rl4b",
+      "timestamp": "2026-01-28T09:41:51.177Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593311177-q8sstohv0",
+      "timestamp": "2026-01-28T09:41:51.177Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 1 items"
+    },
+    {
+      "id": "1769593311178-zr461bs8i",
+      "timestamp": "2026-01-28T09:41:51.178Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 1 items",
+      "data": {
+        "path": "projects",
+        "totalItems": 1,
+        "filteredItems": 1,
+        "sortedItems": 1
+      }
+    },
+    {
+      "id": "1769593311178-0mu416elj",
+      "timestamp": "2026-01-28T09:41:51.178Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593311179-ghtuqoqi5",
+      "timestamp": "2026-01-28T09:41:51.179Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593311181-xoepigbrk",
+      "timestamp": "2026-01-28T09:41:51.181Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #7",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 10,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593311181-v4mrxla15",
+      "timestamp": "2026-01-28T09:41:51.181Z",
+      "level": "warn",
+      "category": "useLocalFiles",
+      "message": "Rapid effect execution detected! Run #7, 10ms since last run",
+      "data": {
+        "effectRunCount": 7,
+        "timeSinceLastRun": 10
+      }
+    },
+    {
+      "id": "1769593311182-yx48k71o9",
+      "timestamp": "2026-01-28T09:41:51.182Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593311182-pswfvmw8n",
+      "timestamp": "2026-01-28T09:41:51.182Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593311182-pw0bxrt5t",
+      "timestamp": "2026-01-28T09:41:51.182Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593311183-89b814232",
+      "timestamp": "2026-01-28T09:41:51.183Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593311183-oj9shc4ku",
+      "timestamp": "2026-01-28T09:41:51.183Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593311183-rvhape69v",
+      "timestamp": "2026-01-28T09:41:51.183Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593311184-t02fb6eym",
+      "timestamp": "2026-01-28T09:41:51.184Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593311184-zrxew5x4y",
+      "timestamp": "2026-01-28T09:41:51.184Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for full tree",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593311184-u0gtmp6xi",
+      "timestamp": "2026-01-28T09:41:51.184Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593311186-olkx3z1i0",
+      "timestamp": "2026-01-28T09:41:51.186Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593311187-71pnc7xo4",
+      "timestamp": "2026-01-28T09:41:51.187Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    },
+    {
+      "id": "1769593316411-2eh6x1csd",
+      "timestamp": "2026-01-28T09:41:56.411Z",
+      "level": "warn",
+      "category": "Performance",
+      "message": "Long task detected: 56.00ms",
+      "data": {
+        "duration": 56,
+        "startTime": 8901.5
+      }
+    },
+    {
+      "id": "1769593342128-6fnwzpzss",
+      "timestamp": "2026-01-28T09:42:22.128Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593346218-9nreosq2p",
+      "timestamp": "2026-01-28T09:42:26.218Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593347037-jh1zo2e7x",
+      "timestamp": "2026-01-28T09:42:27.037Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389188-6btdmhdxp",
+      "timestamp": "2026-01-28T09:43:09.188Z",
+      "level": "info",
+      "category": "App",
+      "message": "Docuryon initializing",
+      "data": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+        "url": "https://id213sin.github.io/docuryon/",
+        "timestamp": "2026-01-28T09:43:09.187Z"
+      }
+    },
+    {
+      "id": "1769593389189-6pwhc59h8",
+      "timestamp": "2026-01-28T09:43:09.189Z",
+      "level": "debug",
+      "category": "App",
+      "message": "Initializing local file service",
+      "data": {
+        "config": {
+          "basePath": "/trunk"
+        }
+      }
+    },
+    {
+      "id": "1769593389189-k03n3n8j2",
+      "timestamp": "2026-01-28T09:43:09.189Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Initializing service",
+      "data": {
+        "basePath": "/trunk"
+      }
+    },
+    {
+      "id": "1769593389189-3fj6teyec",
+      "timestamp": "2026-01-28T09:43:09.189Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Service initialized",
+      "data": {
+        "basePath": "/trunk"
+      }
+    },
+    {
+      "id": "1769593389190-rv4x5jldl",
+      "timestamp": "2026-01-28T09:43:09.190Z",
+      "level": "info",
+      "category": "App",
+      "message": "Local file service initialized"
+    },
+    {
+      "id": "1769593389210-56axtgyfv",
+      "timestamp": "2026-01-28T09:43:09.210Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389215-ah0xas8ai",
+      "timestamp": "2026-01-28T09:43:09.215Z",
+      "level": "warn",
+      "category": "Performance",
+      "message": "Long task detected: 50.00ms",
+      "data": {
+        "duration": 50,
+        "startTime": 608.2999999821186
+      }
+    },
+    {
+      "id": "1769593389216-g2lqtn36x",
+      "timestamp": "2026-01-28T09:43:09.216Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #1",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 61,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593389216-kfesgd8fl",
+      "timestamp": "2026-01-28T09:43:09.216Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593389216-0lgvyllto",
+      "timestamp": "2026-01-28T09:43:09.216Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593389216-82ylyqalc",
+      "timestamp": "2026-01-28T09:43:09.216Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593389217-zz9zb72gu",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593389217-s3p0825ev",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593389217-mj9fwwlkf",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593389217-kp8fvurry",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593389217-eiqv04uci",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593389217-33zijirs1",
+      "timestamp": "2026-01-28T09:43:09.217Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #2",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 1,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593389218-2c4qji60b",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593389218-g2szqj6hj",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593389218-pho33g3vy",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593389218-c7ldj5t3t",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593389218-sxta2ynh5",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593389218-yiyzs9pkr",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593389218-8j08y9u5r",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593389218-axub2uxu7",
+      "timestamp": "2026-01-28T09:43:09.218Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593389219-04n9s1rlz",
+      "timestamp": "2026-01-28T09:43:09.219Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389222-83c3y6ky2",
+      "timestamp": "2026-01-28T09:43:09.222Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389222-z0o13qjhu",
+      "timestamp": "2026-01-28T09:43:09.222Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593389222-3mquops4h",
+      "timestamp": "2026-01-28T09:43:09.222Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 items"
+    },
+    {
+      "id": "1769593389222-v8iadhvqz",
+      "timestamp": "2026-01-28T09:43:09.222Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 2 items",
+      "data": {
+        "path": "",
+        "totalItems": 3,
+        "filteredItems": 2,
+        "sortedItems": 2
+      }
+    },
+    {
+      "id": "1769593389222-8iufkwxih",
+      "timestamp": "2026-01-28T09:43:09.222Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593389223-yqjmfqr8p",
+      "timestamp": "2026-01-28T09:43:09.223Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389225-skyf9n6f8",
+      "timestamp": "2026-01-28T09:43:09.225Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #3",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 8,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593389225-4gq7drixd",
+      "timestamp": "2026-01-28T09:43:09.225Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593389226-cpxvkwnsq",
+      "timestamp": "2026-01-28T09:43:09.226Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593389226-8kjpmf34b",
+      "timestamp": "2026-01-28T09:43:09.226Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593389226-p60ohnwen",
+      "timestamp": "2026-01-28T09:43:09.226Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593389226-y4ly6u4mf",
+      "timestamp": "2026-01-28T09:43:09.226Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593389227-dq3r80hzp",
+      "timestamp": "2026-01-28T09:43:09.227Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593389227-5jdhos8va",
+      "timestamp": "2026-01-28T09:43:09.227Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593389227-4e59ul6hs",
+      "timestamp": "2026-01-28T09:43:09.227Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Loading file tree",
+      "data": {
+        "treeUrl": "https://id213sin.github.io/docuryon/file-tree.json"
+      }
+    },
+    {
+      "id": "1769593389227-uasrnge67",
+      "timestamp": "2026-01-28T09:43:09.227Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389228-7p81c41m5",
+      "timestamp": "2026-01-28T09:43:09.228Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593389228-t8926xxx5",
+      "timestamp": "2026-01-28T09:43:09.228Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389228-2opz2619d",
+      "timestamp": "2026-01-28T09:43:09.228Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389228-xi47g7qfq",
+      "timestamp": "2026-01-28T09:43:09.228Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 tree items"
+    },
+    {
+      "id": "1769593389228-og6x0hctv",
+      "timestamp": "2026-01-28T09:43:09.228Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "File tree loaded: 2 items after filtering",
+      "data": {
+        "total": 3,
+        "filtered": 2
+      }
+    },
+    {
+      "id": "1769593389229-fqe7nlf1p",
+      "timestamp": "2026-01-28T09:43:09.229Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389230-vm9ptf2i4",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389230-3csoou8x1",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593389230-urr5i9soa",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 items"
+    },
+    {
+      "id": "1769593389230-5mq0nk84c",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 2 items",
+      "data": {
+        "path": "",
+        "totalItems": 3,
+        "filteredItems": 2,
+        "sortedItems": 2
+      }
+    },
+    {
+      "id": "1769593389230-c0x3ezqe6",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593389230-la3sx5z7p",
+      "timestamp": "2026-01-28T09:43:09.230Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389231-as91qffqi",
+      "timestamp": "2026-01-28T09:43:09.231Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #4",
+      "data": {
+        "currentPath": "",
+        "timeSinceLastRun": 6,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593389231-lu8i1c268",
+      "timestamp": "2026-01-28T09:43:09.231Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"(root)\"",
+      "data": {
+        "currentPath": ""
+      }
+    },
+    {
+      "id": "1769593389231-21ovv6sd8",
+      "timestamp": "2026-01-28T09:43:09.231Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593389231-94msdrzpb",
+      "timestamp": "2026-01-28T09:43:09.231Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": ""
+      }
+    },
+    {
+      "id": "1769593389231-a9v2tlmvk",
+      "timestamp": "2026-01-28T09:43:09.231Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "",
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "1769593389232-0qjo09gzx",
+      "timestamp": "2026-01-28T09:43:09.232Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593389232-ml75i6evn",
+      "timestamp": "2026-01-28T09:43:09.232Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593389232-n3f33ptmp",
+      "timestamp": "2026-01-28T09:43:09.232Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593389232-bcqxoczpj",
+      "timestamp": "2026-01-28T09:43:09.232Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for full tree",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389232-bjynjnscf",
+      "timestamp": "2026-01-28T09:43:09.232Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389233-q8na5d78t",
+      "timestamp": "2026-01-28T09:43:09.233Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593389233-xcps0nl1o",
+      "timestamp": "2026-01-28T09:43:09.233Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    },
+    {
+      "id": "1769593389235-4pgxj2fgp",
+      "timestamp": "2026-01-28T09:43:09.235Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389235-sssi8ko6o",
+      "timestamp": "2026-01-28T09:43:09.235Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389235-qcz9cye61",
+      "timestamp": "2026-01-28T09:43:09.235Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 3 tree items"
+    },
+    {
+      "id": "1769593389235-jmllmmgvs",
+      "timestamp": "2026-01-28T09:43:09.235Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "File tree loaded: 2 items after filtering",
+      "data": {
+        "total": 3,
+        "filtered": 2
+      }
+    },
+    {
+      "id": "1769593389235-d7hnpaje5",
+      "timestamp": "2026-01-28T09:43:09.235Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593389237-kjphwhjr6",
+      "timestamp": "2026-01-28T09:43:09.237Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "File tree loaded successfully",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389237-piyccydwy",
+      "timestamp": "2026-01-28T09:43:09.237Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Full tree loaded and cached",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593389238-h75258tgl",
+      "timestamp": "2026-01-28T09:43:09.238Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    },
+    {
+      "id": "1769593395341-3lvqzhbwo",
+      "timestamp": "2026-01-28T09:43:15.341Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593395344-uxs534hju",
+      "timestamp": "2026-01-28T09:43:15.344Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #5",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 6113,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593395345-6mixbgvko",
+      "timestamp": "2026-01-28T09:43:15.345Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593395345-75f923tzs",
+      "timestamp": "2026-01-28T09:43:15.345Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593395346-txlf48au5",
+      "timestamp": "2026-01-28T09:43:15.346Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593395346-1qxkqancd",
+      "timestamp": "2026-01-28T09:43:15.346Z",
+      "level": "info",
+      "category": "LocalFileService",
+      "message": "Directory contents loaded",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593395347-tvreqrje1",
+      "timestamp": "2026-01-28T09:43:15.347Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #6",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 3,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593395347-09pae9wtu",
+      "timestamp": "2026-01-28T09:43:15.347Z",
+      "level": "warn",
+      "category": "useLocalFiles",
+      "message": "Rapid effect execution detected! Run #6, 3ms since last run",
+      "data": {
+        "effectRunCount": 6,
+        "timeSinceLastRun": 3
+      }
+    },
+    {
+      "id": "1769593395348-64cx3pxo2",
+      "timestamp": "2026-01-28T09:43:15.348Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593395348-gz3mr092t",
+      "timestamp": "2026-01-28T09:43:15.348Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593395348-3tlt7fl0w",
+      "timestamp": "2026-01-28T09:43:15.348Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593395348-hvp33dx39",
+      "timestamp": "2026-01-28T09:43:15.348Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593395349-ha5w7qfhf",
+      "timestamp": "2026-01-28T09:43:15.349Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593395351-ilnnrmhzh",
+      "timestamp": "2026-01-28T09:43:15.351Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 1 items"
+    },
+    {
+      "id": "1769593395351-la07zww8c",
+      "timestamp": "2026-01-28T09:43:15.351Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 1 items",
+      "data": {
+        "path": "projects",
+        "totalItems": 1,
+        "filteredItems": 1,
+        "sortedItems": 1
+      }
+    },
+    {
+      "id": "1769593395351-6s6ypxsqx",
+      "timestamp": "2026-01-28T09:43:15.351Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593395352-hqo44ql81",
+      "timestamp": "2026-01-28T09:43:15.352Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Received 1 items"
+    },
+    {
+      "id": "1769593395352-2w50vf16l",
+      "timestamp": "2026-01-28T09:43:15.352Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Directory loaded successfully: 1 items",
+      "data": {
+        "path": "projects",
+        "totalItems": 1,
+        "filteredItems": 1,
+        "sortedItems": 1
+      }
+    },
+    {
+      "id": "1769593395352-wvnp2bwsh",
+      "timestamp": "2026-01-28T09:43:15.352Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Load complete, isLoadingRef reset"
+    },
+    {
+      "id": "1769593395353-bmqp6naam",
+      "timestamp": "2026-01-28T09:43:15.353Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593395355-ws32nwr1u",
+      "timestamp": "2026-01-28T09:43:15.355Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect triggered #7",
+      "data": {
+        "currentPath": "projects",
+        "timeSinceLastRun": 8,
+        "isLoading": false,
+        "filter": {
+          "showHidden": false,
+          "searchQuery": "",
+          "fileTypes": []
+        },
+        "sortField": "name",
+        "sortOrder": "asc"
+      }
+    },
+    {
+      "id": "1769593395355-cr9v3m8q0",
+      "timestamp": "2026-01-28T09:43:15.355Z",
+      "level": "warn",
+      "category": "useLocalFiles",
+      "message": "Rapid effect execution detected! Run #7, 8ms since last run",
+      "data": {
+        "effectRunCount": 7,
+        "timeSinceLastRun": 8
+      }
+    },
+    {
+      "id": "1769593395356-9nf2epv7i",
+      "timestamp": "2026-01-28T09:43:15.356Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading directory: \"projects\"",
+      "data": {
+        "currentPath": "projects"
+      }
+    },
+    {
+      "id": "1769593395356-m5x1ku0c4",
+      "timestamp": "2026-01-28T09:43:15.356Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching directory contents from local file service"
+    },
+    {
+      "id": "1769593395356-23m4hdgqg",
+      "timestamp": "2026-01-28T09:43:15.356Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getDirectoryContents called",
+      "data": {
+        "path": "projects"
+      }
+    },
+    {
+      "id": "1769593395356-w8u3bvhe7",
+      "timestamp": "2026-01-28T09:43:15.356Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for directory contents",
+      "data": {
+        "path": "projects",
+        "itemCount": 1
+      }
+    },
+    {
+      "id": "1769593395357-mwzigqukq",
+      "timestamp": "2026-01-28T09:43:15.357Z",
+      "level": "info",
+      "category": "useLocalFiles",
+      "message": "Loading full file tree on mount"
+    },
+    {
+      "id": "1769593395357-wftwvt8ve",
+      "timestamp": "2026-01-28T09:43:15.357Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Fetching full tree from local file service"
+    },
+    {
+      "id": "1769593395357-bw3ndquan",
+      "timestamp": "2026-01-28T09:43:15.357Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "getFullTree called"
+    },
+    {
+      "id": "1769593395358-5rgwtbf2p",
+      "timestamp": "2026-01-28T09:43:15.358Z",
+      "level": "debug",
+      "category": "LocalFileService",
+      "message": "Cache hit for full tree",
+      "data": {
+        "nodeCount": 3
+      }
+    },
+    {
+      "id": "1769593395358-v78pgd915",
+      "timestamp": "2026-01-28T09:43:15.358Z",
+      "level": "debug",
+      "category": "App",
+      "message": "AppContent rendering",
+      "data": {
+        "isSidebarOpen": true,
+        "isPreviewOpen": false,
+        "hasPreviewFile": false
+      }
+    },
+    {
+      "id": "1769593395359-apqqqi44l",
+      "timestamp": "2026-01-28T09:43:15.359Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping directory update"
+    },
+    {
+      "id": "1769593395359-ozkssi5s6",
+      "timestamp": "2026-01-28T09:43:15.359Z",
+      "level": "debug",
+      "category": "useLocalFiles",
+      "message": "Effect aborted, skipping tree update"
+    }
+  ]
+}
