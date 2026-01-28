@@ -5,6 +5,7 @@ import { StatusBar } from '@/components/layout/StatusBar';
 import { PreviewPanel } from '@/components/preview/PreviewPanel';
 import { ErrorBoundary, DebugPanel } from '@/components/common';
 import { useTheme } from '@/hooks/useTheme';
+import { useLocalFilesLoader } from '@/hooks/useLocalFiles';
 import { useExplorerStore } from '@/store/useExplorerStore';
 import { initLocalFileService } from '@/services/local';
 import { logInfo, logDebug } from '@/services/debug';
@@ -25,6 +26,9 @@ logInfo('App', 'Local file service initialized');
 function AppContent() {
   const { isSidebarOpen, isPreviewOpen, previewFile } = useExplorerStore();
   useTheme();
+
+  // Load data from local file service - called ONCE here
+  useLocalFilesLoader();
 
   logDebug('App', 'AppContent rendering', { isSidebarOpen, isPreviewOpen, hasPreviewFile: !!previewFile });
 
