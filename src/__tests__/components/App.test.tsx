@@ -3,16 +3,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { act } from 'react';
 
 // Mock all external dependencies before importing App
-vi.mock('@/services/github', () => ({
-  initGitHubService: vi.fn(),
-  getGitHubService: vi.fn(() => ({
+vi.mock('@/services/local', () => ({
+  initLocalFileService: vi.fn(),
+  getLocalFileService: vi.fn(() => ({
     getDirectoryContents: vi.fn().mockResolvedValue([
       { name: 'test-file.md', path: 'test-file.md', type: 'file', sha: 'abc123', url: '' },
     ]),
     getFullTree: vi.fn().mockResolvedValue([
       { name: 'test-file.md', path: 'test-file.md', type: 'file', sha: 'abc123', url: '' },
     ]),
-    getRawUrl: vi.fn((path: string) => `https://raw.example.com/${path}`),
+    getRawUrl: vi.fn((path: string) => `/trunk/${path}`),
   })),
 }));
 

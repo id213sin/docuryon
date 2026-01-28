@@ -1,7 +1,12 @@
 import { Component, type ReactNode } from 'react';
 import { debugLogger, logError } from '@/services/debug';
 import { AlertTriangle, RefreshCw, Bug, Download, ExternalLink } from 'lucide-react';
-import { GITHUB_CONFIG } from '@/config/app.config';
+
+// Hardcoded GitHub repo info for issue reporting
+const GITHUB_REPO = {
+  owner: 'id213sin',
+  repo: 'docuryon',
+};
 
 interface Props {
   children: ReactNode;
@@ -68,8 +73,8 @@ export class ErrorBoundary extends Component<Props, State> {
   openGitHubIssue = (): void => {
     const errorMessage = this.state.error?.message || 'Unknown error';
     const url = debugLogger.getGitHubIssueUrl(
-      GITHUB_CONFIG.owner,
-      GITHUB_CONFIG.repo,
+      GITHUB_REPO.owner,
+      GITHUB_REPO.repo,
       errorMessage
     );
     window.open(url, '_blank');

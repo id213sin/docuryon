@@ -6,9 +6,9 @@ import { PreviewPanel } from '@/components/preview/PreviewPanel';
 import { ErrorBoundary, DebugPanel } from '@/components/common';
 import { useTheme } from '@/hooks/useTheme';
 import { useExplorerStore } from '@/store/useExplorerStore';
-import { initGitHubService } from '@/services/github';
+import { initLocalFileService } from '@/services/local';
 import { logInfo, logDebug } from '@/services/debug';
-import { GITHUB_CONFIG } from '@/config/app.config';
+import { TRUNK_CONFIG } from '@/config/app.config';
 
 // Log app initialization
 logInfo('App', 'Docuryon initializing', {
@@ -17,10 +17,10 @@ logInfo('App', 'Docuryon initializing', {
   timestamp: new Date().toISOString(),
 });
 
-// Initialize GitHub service at module level (before any component renders)
-logDebug('App', 'Initializing GitHub service', { config: GITHUB_CONFIG });
-initGitHubService(GITHUB_CONFIG);
-logInfo('App', 'GitHub service initialized');
+// Initialize local file service at module level (before any component renders)
+logDebug('App', 'Initializing local file service', { config: TRUNK_CONFIG });
+initLocalFileService(TRUNK_CONFIG.basePath);
+logInfo('App', 'Local file service initialized');
 
 function AppContent() {
   const { isSidebarOpen, isPreviewOpen, previewFile } = useExplorerStore();

@@ -1,5 +1,5 @@
 import { FileItem } from './FileItem';
-import { useGitHubApi } from '@/hooks/useGitHubApi';
+import { useLocalFiles } from '@/hooks/useLocalFiles';
 import type { FileNode } from '@/types/file';
 
 interface GridViewProps {
@@ -9,7 +9,7 @@ interface GridViewProps {
 }
 
 export function GridView({ items, onItemClick, onItemDoubleClick }: GridViewProps) {
-  const { getRawUrl } = useGitHubApi();
+  const { getRawUrl } = useLocalFiles();
 
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">

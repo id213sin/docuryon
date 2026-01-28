@@ -13,7 +13,7 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { useExplorerStore } from '@/store/useExplorerStore';
-import { useGitHubApi } from '@/hooks/useGitHubApi';
+import { useLocalFiles } from '@/hooks/useLocalFiles';
 import { APP_CONFIG } from '@/config/app.config';
 
 export function Header() {
@@ -32,7 +32,7 @@ export function Header() {
     filter
   } = useExplorerStore();
 
-  const { loadDirectory } = useGitHubApi();
+  const { loadDirectory } = useLocalFiles();
 
   const canGoBack = historyIndex > 0;
   const canGoForward = historyIndex < pathHistory.length - 1;
