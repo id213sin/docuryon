@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, ExternalLink, Download } from 'lucide-react';
 import { useExplorerStore } from '@/store/useExplorerStore';
-import { useGitHubApi } from '@/hooks/useGitHubApi';
+import { useLocalFiles } from '@/hooks/useLocalFiles';
 import { Button } from '@/components/common/Button';
 import { Spinner } from '@/components/common/Spinner';
 import { MarkdownPreview } from './MarkdownPreview';
@@ -21,7 +21,7 @@ export function PreviewPanel({ file }: PreviewPanelProps) {
   const [error, setError] = useState<string | null>(null);
 
   const { setPreviewFile } = useExplorerStore();
-  const { getRawUrl, getFileContent } = useGitHubApi();
+  const { getRawUrl, getFileContent } = useLocalFiles();
 
   const rawUrl = getRawUrl(file.path);
   const extension = getFileExtension(file.name);

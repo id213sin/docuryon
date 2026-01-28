@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useExplorerStore } from '@/store/useExplorerStore';
-import { getGitHubService } from '@/services/github';
+import { getLocalFileService } from '@/services/local';
 import { HIDDEN_PATTERNS } from '@/config/hidden-patterns';
 import { logDebug, logInfo, logError, logWarn } from '@/services/debug';
 import type { FileNode } from '@/types/file';
@@ -8,7 +8,7 @@ import type { FileNode } from '@/types/file';
 let effectRunCount = 0;
 let lastEffectTime = Date.now();
 
-export function useGitHubApi() {
+export function useLocalFiles() {
   const currentPath = useExplorerStore((state) => state.currentPath);
   const setFileTree = useExplorerStore((state) => state.setFileTree);
   const setCurrentItems = useExplorerStore((state) => state.setCurrentItems);
@@ -97,8 +97,8 @@ export function useGitHubApi() {
     setError(null);
 
     try {
-      const githubService = getGitHubService();
-      const items = await githubService.getDirectoryContents(currentPath);
+      const localService = getLocalFileService();
+      const items = await localService.getDirectoryContents(currentPath);
       const filteredItems = filterItems(items as FileNode[]);
       const sortedItems = sortItems(filteredItems);
       setCurrentItems(sortedItems);
@@ -115,8 +115,8 @@ export function useGitHubApi() {
     hasLoadedTreeRef.current = true;
     setLoading(true);
     try {
-      const githubService = getGitHubService();
-      const tree = await githubService.getFullTree();
+      const localService = getLocalFileService();
+      const tree = await localService.getFullTree();
       const filteredTree = tree.filter(node => !isHidden(node.name, node.path));
       setFileTree(filteredTree);
     } catch (error) {
@@ -127,9 +127,8 @@ export function useGitHubApi() {
     }
   }, [isHidden, setFileTree, setLoading]);
 
-  // Load directory when path changes - use currentPath directly to avoid infinite loop
+  // Load directory when path changes
   useEffect(() => {
-    // Use AbortController pattern for proper cleanup
     const abortController = new AbortController();
 
     effectRunCount++;
@@ -137,7 +136,7 @@ export function useGitHubApi() {
     const timeSinceLastRun = now - lastEffectTime;
     lastEffectTime = now;
 
-    logDebug('useGitHubApi', `Effect triggered #${effectRunCount}`, {
+    logDebug('useLocalFiles', `Effect triggered #${effectRunCount}`, {
       currentPath,
       timeSinceLastRun,
       isLoading: isLoadingRef.current,
@@ -148,33 +147,31 @@ export function useGitHubApi() {
 
     // Detect rapid re-renders (potential infinite loop)
     if (timeSinceLastRun < 50 && effectRunCount > 5) {
-      logWarn('useGitHubApi', `Rapid effect execution detected! Run #${effectRunCount}, ${timeSinceLastRun}ms since last run`, {
+      logWarn('useLocalFiles', `Rapid effect execution detected! Run #${effectRunCount}, ${timeSinceLastRun}ms since last run`, {
         effectRunCount,
         timeSinceLastRun,
       });
     }
 
     const loadData = async () => {
-      // Always start fresh load for each effect instance (important for StrictMode)
       isLoadingRef.current = true;
       setLoading(true);
       setError(null);
 
-      logInfo('useGitHubApi', `Loading directory: "${currentPath || '(root)'}"`, { currentPath });
+      logInfo('useLocalFiles', `Loading directory: "${currentPath || '(root)'}"`, { currentPath });
 
       try {
-        const githubService = getGitHubService();
-        logDebug('useGitHubApi', 'Fetching directory contents from GitHub API');
-        const items = await githubService.getDirectoryContents(currentPath);
+        const localService = getLocalFileService();
+        logDebug('useLocalFiles', 'Fetching directory contents from local file service');
+        const items = await localService.getDirectoryContents(currentPath);
 
-        // Check if this effect was cleaned up
         if (abortController.signal.aborted) {
-          logDebug('useGitHubApi', 'Effect aborted, skipping directory update');
+          logDebug('useLocalFiles', 'Effect aborted, skipping directory update');
           return;
         }
 
-        logDebug('useGitHubApi', `Received ${items.length} items from API`);
-        // Apply filter and sort inline to avoid dependency on callbacks
+        logDebug('useLocalFiles', `Received ${items.length} items`);
+
         const filteredItems = (items as FileNode[]).filter(item => {
           if (!filter.showHidden) {
             const hidden = HIDDEN_PATTERNS.some(pattern => {
@@ -229,7 +226,7 @@ export function useGitHubApi() {
           return sortOrder === 'asc' ? comparison : -comparison;
         });
 
-        logInfo('useGitHubApi', `Directory loaded successfully: ${sortedItems.length} items`, {
+        logInfo('useLocalFiles', `Directory loaded successfully: ${sortedItems.length} items`, {
           path: currentPath,
           totalItems: items.length,
           filteredItems: filteredItems.length,
@@ -238,11 +235,11 @@ export function useGitHubApi() {
         setCurrentItems(sortedItems);
         setLoading(false);
         isLoadingRef.current = false;
-        logDebug('useGitHubApi', 'Load complete, isLoadingRef reset');
+        logDebug('useLocalFiles', 'Load complete, isLoadingRef reset');
       } catch (error) {
         if (!abortController.signal.aborted) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to load directory';
-          logError('useGitHubApi', `Failed to load directory: ${errorMessage}`, { error, currentPath });
+          logError('useLocalFiles', `Failed to load directory: ${errorMessage}`, { error, currentPath });
           setError(errorMessage);
           setLoading(false);
           isLoadingRef.current = false;
@@ -254,7 +251,6 @@ export function useGitHubApi() {
 
     return () => {
       abortController.abort();
-      // Reset loading state on cleanup to allow next mount to load
       isLoadingRef.current = false;
     };
   }, [currentPath, filter.showHidden, filter.searchQuery, filter.fileTypes, sortField, sortOrder, setCurrentItems, setLoading, setError]);
@@ -263,27 +259,25 @@ export function useGitHubApi() {
   useEffect(() => {
     const abortController = new AbortController();
 
-    // Skip if already loaded (for HMR and production)
     if (hasLoadedTreeRef.current) {
-      logDebug('useGitHubApi', 'Tree already loaded, skipping');
+      logDebug('useLocalFiles', 'Tree already loaded, skipping');
       return;
     }
 
-    logInfo('useGitHubApi', 'Loading full file tree on mount');
+    logInfo('useLocalFiles', 'Loading full file tree on mount');
 
     const loadTree = async () => {
       try {
-        const githubService = getGitHubService();
-        logDebug('useGitHubApi', 'Fetching full tree from GitHub API');
-        const tree = await githubService.getFullTree();
+        const localService = getLocalFileService();
+        logDebug('useLocalFiles', 'Fetching full tree from local file service');
+        const tree = await localService.getFullTree();
 
-        // Check if this effect was cleaned up
         if (abortController.signal.aborted) {
-          logDebug('useGitHubApi', 'Effect aborted, skipping tree update');
+          logDebug('useLocalFiles', 'Effect aborted, skipping tree update');
           return;
         }
 
-        logDebug('useGitHubApi', `Received ${tree.length} tree items`);
+        logDebug('useLocalFiles', `Received ${tree.length} tree items`);
 
         const filteredTree = tree.filter(node => {
           return !HIDDEN_PATTERNS.some(pattern => {
@@ -294,16 +288,15 @@ export function useGitHubApi() {
           });
         });
 
-        logInfo('useGitHubApi', `File tree loaded: ${filteredTree.length} items after filtering`, {
+        logInfo('useLocalFiles', `File tree loaded: ${filteredTree.length} items after filtering`, {
           total: tree.length,
           filtered: filteredTree.length,
         });
         setFileTree(filteredTree);
-        hasLoadedTreeRef.current = true; // Mark as loaded only after success
+        hasLoadedTreeRef.current = true;
       } catch (error) {
         if (!abortController.signal.aborted) {
-          logError('useGitHubApi', 'Failed to load file tree', { error });
-          // Don't set hasLoadedTreeRef to allow retry
+          logError('useLocalFiles', 'Failed to load file tree', { error });
         }
       }
     };
@@ -316,13 +309,13 @@ export function useGitHubApi() {
   }, [setFileTree]);
 
   const getRawUrl = useCallback((path: string) => {
-    const githubService = getGitHubService();
-    return githubService.getRawUrl(path);
+    const localService = getLocalFileService();
+    return localService.getRawUrl(path);
   }, []);
 
   const getFileContent = useCallback((path: string) => {
-    const githubService = getGitHubService();
-    return githubService.getFileContent(path);
+    const localService = getLocalFileService();
+    return localService.getFileContent(path);
   }, []);
 
   return {

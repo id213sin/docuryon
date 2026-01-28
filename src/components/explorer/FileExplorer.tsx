@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useExplorerStore } from '@/store/useExplorerStore';
-import { useGitHubApi } from '@/hooks/useGitHubApi';
+import { useLocalFiles } from '@/hooks/useLocalFiles';
 import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { GridView } from './GridView';
 import { ListView } from './ListView';
@@ -19,7 +19,7 @@ export function FileExplorer() {
     setPreviewFile
   } = useExplorerStore();
 
-  const { getRawUrl } = useGitHubApi();
+  const { getRawUrl } = useLocalFiles();
 
   const handleItemClick = useCallback(
     (item: FileNode) => {

@@ -1,16 +1,8 @@
-import type { GitHubConfig } from '@/types/github';
-
-// These values should be set based on your repository
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'id213sin',
-  repo: 'docuryon',
-  branch: 'main',
-  basePath: 'trunk',
-
-  // GitHub Enterprise configuration (optional)
-  // Uncomment and modify for GitHub Enterprise Server:
-  // apiUrl: 'https://github.your-company.com/api/v3',
-  // rawUrl: 'https://github.your-company.com/raw',
+// Trunk (document root) configuration
+// Can be overridden by DOCURYON_TRUNK_PATH environment variable at build time
+export const TRUNK_CONFIG = {
+  // Base path where documents are served from (relative to site root)
+  basePath: '/trunk',
 };
 
 export const APP_CONFIG = {

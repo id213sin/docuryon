@@ -5,10 +5,10 @@ import { useExplorerStore } from '@/store/useExplorerStore';
 import { act } from 'react';
 import type { FileNode } from '@/types/file';
 
-// Mock the useGitHubApi hook
-vi.mock('@/hooks/useGitHubApi', () => ({
-  useGitHubApi: () => ({
-    getRawUrl: vi.fn((path: string) => `https://raw.example.com/${path}`),
+// Mock the useLocalFiles hook
+vi.mock('@/hooks/useLocalFiles', () => ({
+  useLocalFiles: () => ({
+    getRawUrl: vi.fn((path: string) => `/trunk/${path}`),
     loadDirectory: vi.fn(),
     loadFullTree: vi.fn(),
     getFileContent: vi.fn(),

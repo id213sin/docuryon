@@ -1,6 +1,6 @@
 # Docuryon
 
-A self-hosted document management system deployed on GitHub Pages that functions as a file explorer for browsing, previewing, and managing documents stored in a GitHub repository.
+A self-hosted document management system that functions as a file explorer for browsing, previewing, and managing documents. Deploy on GitHub Pages, any static hosting service, or run locally.
 
 ## Features
 
@@ -11,6 +11,7 @@ A self-hosted document management system deployed on GitHub Pages that functions
 - **Keyboard Navigation**: Full keyboard support for navigation
 - **Search**: Filter files by name
 - **Responsive Design**: Works on desktop and mobile devices
+- **Static Deployment**: No backend required - works with any static hosting
 
 ## Supported File Types
 
@@ -50,18 +51,33 @@ The build output will be in the `dist/` folder.
 
 ## Configuration
 
-### GitHub Repository Settings
+### Document Root Path (Trunk)
 
-Edit `src/config/app.config.ts` to configure your GitHub repository:
+Docuryon serves documents from a configurable "trunk" folder. You can configure this path in two ways:
+
+#### Option 1: Environment Variable
+
+Set the `DOCURYON_TRUNK_PATH` environment variable before building:
+
+```bash
+# Use custom document path
+DOCURYON_TRUNK_PATH=./docs npm run build
+
+# Or with different folder
+DOCURYON_TRUNK_PATH=./my-documents npm run build
+```
+
+#### Option 2: Default Configuration
+
+Without any environment variable, Docuryon defaults to `./trunk` folder.
+
+### Application Settings
+
+Edit `src/config/app.config.ts` to customize application settings:
 
 ```typescript
-import type { GitHubConfig } from '@/types/github';
-
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'YOUR_GITHUB_USERNAME',  // GitHub username or organization
-  repo: 'YOUR_REPO_NAME',         // Repository name
-  branch: 'main',                  // Branch to read files from
-  basePath: 'trunk'                // Folder containing your documents
+export const TRUNK_CONFIG = {
+  basePath: '/trunk',  // URL path where documents are served
 };
 
 export const APP_CONFIG = {
@@ -80,65 +96,6 @@ export const APP_CONFIG = {
   ]
 };
 ```
-
-### Example Configurations
-
-#### Personal Documentation Site
-
-```typescript
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'johndoe',
-  repo: 'my-docs',
-  branch: 'main',
-  basePath: 'documents'
-};
-```
-
-#### Organization Knowledge Base
-
-```typescript
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'my-company',
-  repo: 'knowledge-base',
-  branch: 'main',
-  basePath: 'docs'
-};
-```
-
-#### Project Documentation with Multiple Branches
-
-```typescript
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'my-org',
-  repo: 'project-docs',
-  branch: 'docs',  // Separate documentation branch
-  basePath: 'content'
-};
-```
-
-#### GitHub Enterprise Server
-
-For organizations using GitHub Enterprise Server, configure the custom API and raw content URLs:
-
-```typescript
-export const GITHUB_CONFIG: GitHubConfig = {
-  owner: 'my-team',
-  repo: 'internal-docs',
-  branch: 'main',
-  basePath: 'docs',
-
-  // GitHub Enterprise Server URLs
-  apiUrl: 'https://github.your-company.com/api/v3',
-  rawUrl: 'https://github.your-company.com/raw'
-};
-```
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `apiUrl` | GitHub API base URL | `https://api.github.com` |
-| `rawUrl` | Raw content base URL | `https://raw.githubusercontent.com` |
-
-> **Note**: For GitHub Enterprise Cloud, you typically don't need to change these URLs. Only configure them for self-hosted GitHub Enterprise Server installations.
 
 ### Hidden Files Configuration
 
@@ -165,7 +122,7 @@ export const HIDDEN_PATTERNS: (string | RegExp)[] = [
 
 ## Document Storage
 
-Store your documents in the `trunk/` folder (or whatever `basePath` you configured). The explorer will automatically display them while hiding all application files.
+Store your documents in the `trunk/` folder (or your configured document root). The explorer will automatically display them while hiding all application files.
 
 ### Recommended Folder Structure
 
@@ -196,6 +153,20 @@ The `trunk/` folder includes sample content to demonstrate the explorer:
 
 These files are for demonstration purposes and can be replaced with your own content.
 
+## How It Works
+
+Docuryon uses a Vite plugin that:
+
+1. **At build time**: Scans your trunk folder and generates a `file-tree.json` manifest
+2. **At build time**: Copies all documents from trunk to the build output
+3. **At runtime**: Loads the file tree from the manifest and serves documents as static files
+
+This approach means:
+- No API calls or backend required
+- Works with any static hosting service
+- All documents are bundled with the deployment
+- Fast file access through direct URLs
+
 ## Deployment
 
 ### GitHub Pages (Recommended)
@@ -207,13 +178,28 @@ This project includes a GitHub Actions workflow for automatic deployment:
 3. Set source to **GitHub Actions**
 4. The site will be available at `https://USERNAME.github.io/REPO_NAME/`
 
-### Manual Deployment
+### Other Static Hosting Services
 
 ```bash
 # Build the project
 npm run build
 
-# The dist/ folder can be deployed to any static hosting service
+# The dist/ folder can be deployed to any static hosting service:
+# - Netlify
+# - Vercel
+# - AWS S3 + CloudFront
+# - Google Cloud Storage
+# - Azure Static Web Apps
+# - Any web server
+```
+
+### Local Server
+
+For testing or local use:
+
+```bash
+npm run build
+npm run preview
 ```
 
 ## Keyboard Shortcuts
@@ -243,14 +229,24 @@ npm run build
 - **Highlight.js** - Code Highlighting
 - **PDF.js** - PDF Preview
 
-## API Rate Limits
+## Development
 
-Docuryon uses the GitHub REST API to fetch files. Be aware of rate limits:
+```bash
+# Run development server
+npm run dev
 
-- **Without authentication**: 60 requests/hour
-- **With authentication**: 5,000 requests/hour
+# Run tests
+npm run test
 
-For high-traffic sites, consider implementing GitHub token authentication.
+# Run tests with coverage
+npm run test:coverage
+
+# Lint code
+npm run lint
+
+# Build for production
+npm run build
+```
 
 ## License
 
