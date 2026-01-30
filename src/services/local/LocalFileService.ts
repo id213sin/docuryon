@@ -23,6 +23,7 @@ export class LocalFileService {
   private fileTree: FileNode[] | null = null;
   private watchers: Map<string, DirectoryWatcher> = new Map();
   private watchInterval: number = 3000; // Check every 3 seconds
+  private useApiEndpoint: boolean = true; // Use /api/directory for lazy loading
 
   constructor(basePath: string = '/trunk') {
     this.basePath = basePath;
@@ -35,7 +36,8 @@ export class LocalFileService {
   }
 
   /**
-   * Get directory contents - only loads immediate children (lazy loading)
+   * Get directory contents using lazy loading API
+   * This fetches only the immediate children of the specified path
    */
   async getDirectoryContents(path: string = ''): Promise<FileSystemItem[]> {
     const cacheKey = `contents:${path}`;
@@ -49,7 +51,22 @@ export class LocalFileService {
     }
 
     try {
-      // Load file tree if not loaded (but only for finding current directory)
+      // Try using the API endpoint for lazy loading (development mode)
+      if (this.useApiEndpoint) {
+        try {
+          const result = await this.fetchDirectoryFromApi(path);
+          if (result) {
+            const hash = this.generateContentHash(result);
+            this.setCache(cacheKey, result, hash);
+            return result;
+          }
+        } catch (apiError) {
+          logDebug('LocalFileService', 'API endpoint not available, falling back to file-tree.json', { apiError });
+          this.useApiEndpoint = false;
+        }
+      }
+
+      // Fallback: Load from file-tree.json
       if (!this.fileTree) {
         await this.loadFileTree();
       }
@@ -91,12 +108,68 @@ export class LocalFileService {
     } catch (error) {
       logError('LocalFileService', 'Error getting directory contents', { error, path });
 
-      // Return access error for the directory itself
       if (error instanceof Error && error.message.includes('Access denied')) {
         throw error;
       }
       throw error;
     }
+  }
+
+  /**
+   * Fetch directory contents from the API endpoint (lazy loading)
+   */
+  private async fetchDirectoryFromApi(path: string): Promise<FileSystemItem[] | null> {
+    const baseUrl = this.getBaseUrl();
+    const apiUrl = `${baseUrl}/api/directory?path=${encodeURIComponent(path)}`;
+
+    logDebug('LocalFileService', 'Fetching from API', { apiUrl });
+
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        // API not available, fall back to file-tree.json
+        return null;
+      }
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const items: FileTreeNode[] = await response.json();
+
+    // Check if this is an error response
+    if ('error' in items) {
+      throw new Error((items as unknown as { error: string }).error);
+    }
+
+    const result: FileSystemItem[] = await Promise.all(
+      items.map(async item => {
+        const fileItem: FileSystemItem = {
+          name: item.name,
+          path: item.path,
+          type: item.type,
+          size: item.size,
+          sha: this.generateHash(item.path),
+          url: this.getFileUrl(item.path),
+          downloadUrl: item.type === 'file' ? this.getFileUrl(item.path) : undefined,
+          isAccessible: true
+        };
+
+        // Check accessibility for files
+        if (item.type === 'file') {
+          try {
+            await this.checkAccess(item.path, item.type);
+          } catch (error) {
+            fileItem.isAccessible = false;
+            fileItem.accessError = error instanceof Error ? error.message : 'Access denied';
+          }
+        }
+
+        return fileItem;
+      })
+    );
+
+    logInfo('LocalFileService', `Directory loaded from API`, { path, itemCount: result.length });
+    return result;
   }
 
   /**
@@ -115,14 +188,12 @@ export class LocalFileService {
         throw new Error('Access denied: Authentication required');
       }
       if (!response.ok && response.status !== 404) {
-        // 404 might be OK for directories, they might not have index
         if (type === 'file') {
           throw new Error(`Access error: HTTP ${response.status}`);
         }
       }
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-        // Network error - might be CORS or offline, treat as potentially accessible
         logDebug('LocalFileService', `Network error checking access for ${path}, assuming accessible`);
         return;
       }
@@ -131,7 +202,7 @@ export class LocalFileService {
   }
 
   /**
-   * Get full tree for sidebar - loads full structure but children marked as not loaded
+   * Get full tree for sidebar - loads structure with limited depth
    */
   async getFullTree(): Promise<FileNode[]> {
     const cacheKey = 'fullTree';
@@ -150,7 +221,7 @@ export class LocalFileService {
         throw new Error('Failed to load file tree');
       }
 
-      // For sidebar, return only directory structure (shallow)
+      // Return the tree structure (already depth-limited by server)
       const tree = this.convertToShallowFileNodes(this.fileTree);
       this.setCache(cacheKey, tree, this.generateContentHash(tree));
       logInfo('LocalFileService', 'Full tree loaded and cached', { nodeCount: tree.length });
@@ -209,7 +280,6 @@ export class LocalFileService {
   watchDirectory(path: string, callback: () => void): () => void {
     const existingWatcher = this.watchers.get(path);
     if (existingWatcher) {
-      // Update callback and return existing cleanup
       existingWatcher.callback = callback;
       return () => this.unwatchDirectory(path);
     }
@@ -218,7 +288,6 @@ export class LocalFileService {
 
     const checkForChanges = async () => {
       try {
-        // Invalidate cache to get fresh data
         const cacheKey = `contents:${path}`;
         const cached = this.cache.get(cacheKey);
         const oldHash = cached?.hash || '';
@@ -233,7 +302,6 @@ export class LocalFileService {
           callback();
         }
 
-        // Update watcher's lastHash
         const watcher = this.watchers.get(path);
         if (watcher) {
           watcher.lastHash = newHash;
@@ -344,7 +412,6 @@ export class LocalFileService {
       downloadUrl: item.downloadUrl,
       isAccessible: true,
       childrenLoaded: false,
-      // For directories, include shallow children structure (names only) for sidebar
       children: item.type === 'directory' && item.children
         ? this.convertToShallowFileNodes(item.children)
         : undefined
@@ -354,12 +421,10 @@ export class LocalFileService {
   private findItemsAtPath(targetPath: string): FileTreeNode[] {
     if (!this.fileTree) return [];
 
-    // Root level
     if (!targetPath || targetPath === '') {
       return this.fileTreeToRaw(this.fileTree);
     }
 
-    // Find the directory at the path
     const parts = targetPath.split('/').filter(p => p);
     let current: FileTreeNode[] = this.fileTreeToRaw(this.fileTree);
 
@@ -385,7 +450,6 @@ export class LocalFileService {
   }
 
   private getBaseUrl(): string {
-    // Get the base URL from import.meta.env or window location
     if (typeof window !== 'undefined') {
       const base = import.meta.env.BASE_URL || '/';
       return window.location.origin + base.replace(/\/$/, '');
@@ -400,7 +464,6 @@ export class LocalFileService {
   }
 
   private generateHash(path: string): string {
-    // Simple hash for compatibility with existing code
     let hash = 0;
     for (let i = 0; i < path.length; i++) {
       const char = path.charCodeAt(i);

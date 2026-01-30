@@ -12,6 +12,7 @@ interface FileTreeNode {
 
 interface FileTreePluginOptions {
   trunkPath?: string;
+  maxDepth?: number; // Maximum depth to scan (default: 1 for lazy loading)
 }
 
 function getDefaultTrunkPath(): string {
@@ -19,7 +20,19 @@ function getDefaultTrunkPath(): string {
   return process.env.DOCURYON_TRUNK_PATH || './trunk';
 }
 
-function scanDirectory(dirPath: string, basePath: string = ''): FileTreeNode[] {
+/**
+ * Scan directory with depth limit to prevent OOM
+ * @param dirPath - Absolute path to scan
+ * @param basePath - Relative path from trunk root
+ * @param currentDepth - Current recursion depth
+ * @param maxDepth - Maximum depth to scan (0 = only current level, -1 = unlimited)
+ */
+function scanDirectory(
+  dirPath: string,
+  basePath: string = '',
+  currentDepth: number = 0,
+  maxDepth: number = 1
+): FileTreeNode[] {
   const items: FileTreeNode[] = [];
 
   try {
@@ -33,21 +46,32 @@ function scanDirectory(dirPath: string, basePath: string = ''): FileTreeNode[] {
       const fullPath = path.join(dirPath, entry.name);
 
       if (entry.isDirectory()) {
-        const children = scanDirectory(fullPath, relativePath);
-        items.push({
+        const node: FileTreeNode = {
           name: entry.name,
           path: relativePath,
-          type: 'directory',
-          children
-        });
+          type: 'directory'
+        };
+
+        // Only recurse if within depth limit
+        // maxDepth of -1 means unlimited (for build time)
+        if (maxDepth === -1 || currentDepth < maxDepth) {
+          node.children = scanDirectory(fullPath, relativePath, currentDepth + 1, maxDepth);
+        }
+
+        items.push(node);
       } else if (entry.isFile()) {
-        const stats = fs.statSync(fullPath);
-        items.push({
-          name: entry.name,
-          path: relativePath,
-          type: 'file',
-          size: stats.size
-        });
+        try {
+          const stats = fs.statSync(fullPath);
+          items.push({
+            name: entry.name,
+            path: relativePath,
+            type: 'file',
+            size: stats.size
+          });
+        } catch (statError) {
+          // Skip files we can't stat (permission issues)
+          console.warn(`Warning: Could not stat file ${fullPath}:`, statError);
+        }
       }
     }
   } catch (error) {
@@ -61,6 +85,13 @@ function scanDirectory(dirPath: string, basePath: string = ''): FileTreeNode[] {
     }
     return a.name.localeCompare(b.name);
   });
+}
+
+/**
+ * Scan only immediate children of a directory (single level)
+ */
+function scanDirectoryShallow(dirPath: string, basePath: string = ''): FileTreeNode[] {
+  return scanDirectory(dirPath, basePath, 0, 0);
 }
 
 function copyDirectorySync(src: string, dest: string): void {
@@ -88,6 +119,7 @@ function copyDirectorySync(src: string, dest: string): void {
 export function fileTreePlugin(options: FileTreePluginOptions = {}): Plugin {
   let config: ResolvedConfig;
   const trunkPath = options.trunkPath || getDefaultTrunkPath();
+  const maxDepth = options.maxDepth ?? 2; // Default depth limit for dev server
 
   return {
     name: 'vite-plugin-file-tree',
@@ -98,6 +130,58 @@ export function fileTreePlugin(options: FileTreePluginOptions = {}): Plugin {
 
     // Serve file-tree.json during development
     configureServer(server) {
+      // API endpoint for getting directory contents (lazy loading)
+      server.middlewares.use((req, res, next) => {
+        const url = new URL(req.url || '', `http://${req.headers.host}`);
+        const pathname = url.pathname;
+
+        // Handle /api/directory?path=some/path for lazy loading
+        if (pathname === '/api/directory' || pathname === `${config.base}api/directory`) {
+          const requestedPath = url.searchParams.get('path') || '';
+          const absoluteTrunkPath = path.resolve(trunkPath);
+          const targetPath = path.join(absoluteTrunkPath, requestedPath);
+
+          // Security check: ensure path is within trunk directory
+          const resolvedTarget = path.resolve(targetPath);
+          if (!resolvedTarget.startsWith(absoluteTrunkPath)) {
+            res.statusCode = 403;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Forbidden: Path outside trunk directory' }));
+            return;
+          }
+
+          if (!fs.existsSync(targetPath)) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: `Directory not found: ${requestedPath}` }));
+            return;
+          }
+
+          if (!fs.statSync(targetPath).isDirectory()) {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: `Not a directory: ${requestedPath}` }));
+            return;
+          }
+
+          try {
+            // Scan only immediate children (shallow)
+            const items = scanDirectoryShallow(targetPath, requestedPath);
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.end(JSON.stringify(items));
+          } catch (error) {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: `Failed to scan directory: ${error}` }));
+          }
+          return;
+        }
+
+        next();
+      });
+
+      // Serve file-tree.json (with depth limit to prevent OOM)
       server.middlewares.use((req, res, next) => {
         if (req.url === `${config.base}file-tree.json` || req.url === '/file-tree.json') {
           const absoluteTrunkPath = path.resolve(trunkPath);
@@ -108,8 +192,10 @@ export function fileTreePlugin(options: FileTreePluginOptions = {}): Plugin {
             return;
           }
 
-          const tree = scanDirectory(absoluteTrunkPath);
+          // Use depth-limited scan to prevent OOM during development
+          const tree = scanDirectory(absoluteTrunkPath, '', 0, maxDepth);
           res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Cache-Control', 'no-cache');
           res.end(JSON.stringify(tree, null, 2));
           return;
         }
@@ -181,8 +267,11 @@ export function fileTreePlugin(options: FileTreePluginOptions = {}): Plugin {
         return;
       }
 
-      // Generate file-tree.json
-      const tree = scanDirectory(absoluteTrunkPath);
+      // Generate file-tree.json with limited depth for build
+      // Use depth 3 for build to balance between usability and memory
+      const buildMaxDepth = 3;
+      console.log(`   Scanning with max depth: ${buildMaxDepth}`);
+      const tree = scanDirectory(absoluteTrunkPath, '', 0, buildMaxDepth);
       fs.writeFileSync(
         path.join(outDir, 'file-tree.json'),
         JSON.stringify(tree, null, 2)
