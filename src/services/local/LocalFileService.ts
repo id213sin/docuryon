@@ -43,6 +43,9 @@ export class LocalFileService {
 
   /**
    * Get directory contents using API (dynamic) or file-tree.json (static)
+   *
+   * Note: This method always tries to fallback to file-tree.json if API fails,
+   * regardless of dataSource state, to avoid race condition issues.
    */
   async getDirectoryContents(path: string = ''): Promise<FileSystemItem[]> {
     const cacheKey = `contents:${path}`;
@@ -55,29 +58,33 @@ export class LocalFileService {
       return cached;
     }
 
-    try {
-      // Try API first (dynamic mode)
-      if (this.dataSource === 'unknown' || this.dataSource === 'api') {
-        try {
-          const result = await this.fetchDirectoryFromApi(path);
+    // Try API first if we're not already confirmed to be in static mode
+    if (this.dataSource !== 'file-tree') {
+      try {
+        const result = await this.fetchDirectoryFromApi(path);
+        if (this.dataSource === 'unknown') {
           this.dataSource = 'api';
-          const hash = this.generateContentHash(result);
-          this.setCache(cacheKey, result, hash);
-          logInfo('LocalFileService', `Directory loaded from API`, { path, itemCount: result.length });
-          return result;
-        } catch (apiError) {
-          if (this.dataSource === 'unknown') {
-            logInfo('LocalFileService', 'API not available, falling back to file-tree.json (static mode)');
-            this.dataSource = 'file-tree';
-          } else {
-            throw apiError;
-          }
         }
+        const hash = this.generateContentHash(result);
+        this.setCache(cacheKey, result, hash);
+        logInfo('LocalFileService', `Directory loaded from API`, { path, itemCount: result.length });
+        return result;
+      } catch (apiError) {
+        logDebug('LocalFileService', 'Directory API failed, will try file-tree.json', { path, error: apiError });
+        // Continue to fallback - don't throw here
       }
+    }
 
-      // Fallback to file-tree.json (static mode)
+    // Fallback to file-tree.json (works for both static mode and API failure)
+    try {
       if (!this.fileTree) {
         await this.loadFileTree();
+      }
+
+      // If we got here via API failure, update dataSource
+      if (this.dataSource === 'unknown') {
+        this.dataSource = 'file-tree';
+        logInfo('LocalFileService', 'API not available, using file-tree.json (static mode)');
       }
 
       const items = this.findItemsAtPath(path);
@@ -151,6 +158,9 @@ export class LocalFileService {
    * Get full tree for sidebar
    * In dynamic mode: uses /api/tree
    * In static mode: uses file-tree.json
+   *
+   * Note: This method always tries to fallback to file-tree.json if API fails,
+   * regardless of dataSource state, to avoid race condition issues.
    */
   async getFullTree(): Promise<FileNode[]> {
     const cacheKey = 'fullTree';
@@ -162,30 +172,35 @@ export class LocalFileService {
       return cached;
     }
 
-    try {
-      // Try API first (dynamic mode)
-      if (this.dataSource === 'unknown' || this.dataSource === 'api') {
-        try {
-          const tree = await this.fetchTreeFromApi();
+    // Try API first if we're not already confirmed to be in static mode
+    if (this.dataSource !== 'file-tree') {
+      try {
+        const tree = await this.fetchTreeFromApi();
+        if (this.dataSource === 'unknown') {
           this.dataSource = 'api';
-          this.setCache(cacheKey, tree, this.generateContentHash(tree));
-          logInfo('LocalFileService', 'Tree loaded from API', { nodeCount: tree.length });
-          return tree;
-        } catch (apiError) {
-          if (this.dataSource === 'unknown') {
-            logInfo('LocalFileService', 'Tree API not available, falling back to file-tree.json');
-            this.dataSource = 'file-tree';
-          } else {
-            throw apiError;
-          }
         }
+        this.setCache(cacheKey, tree, this.generateContentHash(tree));
+        logInfo('LocalFileService', 'Tree loaded from API', { nodeCount: tree.length });
+        return tree;
+      } catch (apiError) {
+        logDebug('LocalFileService', 'Tree API failed, will try file-tree.json', { error: apiError });
+        // Continue to fallback - don't throw here
       }
+    }
 
-      // Fallback to file-tree.json (static mode)
-      await this.loadFileTree();
+    // Fallback to file-tree.json (works for both static mode and API failure)
+    try {
+      if (!this.fileTree) {
+        await this.loadFileTree();
+      }
 
       if (!this.fileTree) {
         throw new Error('Failed to load file tree');
+      }
+
+      // If we got here via API failure, update dataSource
+      if (this.dataSource === 'unknown') {
+        this.dataSource = 'file-tree';
       }
 
       const tree = this.convertToShallowFileNodes(this.fileTree);
