@@ -1,5 +1,5 @@
 import type { FileNode, FileSystemItem } from '@/types/file';
-import { logDebug, logInfo, logError } from '@/services/debug';
+import { logDebug, logInfo, logError, logWarn } from '@/services/debug';
 
 interface FileTreeNode {
   name: string;
@@ -9,11 +9,20 @@ interface FileTreeNode {
   children?: FileTreeNode[];
 }
 
+interface DirectoryWatcher {
+  path: string;
+  callback: () => void;
+  intervalId: ReturnType<typeof setInterval>;
+  lastHash: string;
+}
+
 export class LocalFileService {
   private basePath: string;
-  private cache: Map<string, { data: unknown; timestamp: number }>;
+  private cache: Map<string, { data: unknown; timestamp: number; hash: string }>;
   private cacheTTL: number = 5 * 60 * 1000; // 5 minutes
   private fileTree: FileNode[] | null = null;
+  private watchers: Map<string, DirectoryWatcher> = new Map();
+  private watchInterval: number = 3000; // Check every 3 seconds
 
   constructor(basePath: string = '/trunk') {
     this.basePath = basePath;
@@ -25,6 +34,9 @@ export class LocalFileService {
     return this.basePath;
   }
 
+  /**
+   * Get directory contents - only loads immediate children (lazy loading)
+   */
   async getDirectoryContents(path: string = ''): Promise<FileSystemItem[]> {
     const cacheKey = `contents:${path}`;
 
@@ -37,34 +49,90 @@ export class LocalFileService {
     }
 
     try {
-      // Load full tree first if not loaded
+      // Load file tree if not loaded (but only for finding current directory)
       if (!this.fileTree) {
         await this.loadFileTree();
       }
 
-      // Find items at the specified path
+      // Find items at the specified path - only immediate children
       const items = this.findItemsAtPath(path);
 
-      const result: FileSystemItem[] = items.map(item => ({
-        name: item.name,
-        path: item.path,
-        type: item.type,
-        size: item.size,
-        sha: this.generateHash(item.path),
-        url: this.getFileUrl(item.path),
-        downloadUrl: item.type === 'file' ? this.getFileUrl(item.path) : undefined
-      }));
+      const result: FileSystemItem[] = await Promise.all(
+        items.map(async item => {
+          const fileItem: FileSystemItem = {
+            name: item.name,
+            path: item.path,
+            type: item.type,
+            size: item.size,
+            sha: this.generateHash(item.path),
+            url: this.getFileUrl(item.path),
+            downloadUrl: item.type === 'file' ? this.getFileUrl(item.path) : undefined,
+            isAccessible: true
+          };
 
-      this.setCache(cacheKey, result);
+          // Check accessibility for each item
+          try {
+            await this.checkAccess(item.path, item.type);
+          } catch (error) {
+            fileItem.isAccessible = false;
+            fileItem.accessError = error instanceof Error ? error.message : 'Access denied';
+            logWarn('LocalFileService', `Access denied for ${item.path}`, { error });
+          }
+
+          return fileItem;
+        })
+      );
+
+      const hash = this.generateContentHash(result);
+      this.setCache(cacheKey, result, hash);
       logInfo('LocalFileService', `Directory contents loaded`, { path, itemCount: result.length });
 
       return result;
     } catch (error) {
       logError('LocalFileService', 'Error getting directory contents', { error, path });
+
+      // Return access error for the directory itself
+      if (error instanceof Error && error.message.includes('Access denied')) {
+        throw error;
+      }
       throw error;
     }
   }
 
+  /**
+   * Check if a file or directory is accessible
+   */
+  private async checkAccess(path: string, type: 'file' | 'directory'): Promise<void> {
+    const url = this.getFileUrl(path);
+
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+
+      if (response.status === 403) {
+        throw new Error('Access denied: Permission denied');
+      }
+      if (response.status === 401) {
+        throw new Error('Access denied: Authentication required');
+      }
+      if (!response.ok && response.status !== 404) {
+        // 404 might be OK for directories, they might not have index
+        if (type === 'file') {
+          throw new Error(`Access error: HTTP ${response.status}`);
+        }
+      }
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        // Network error - might be CORS or offline, treat as potentially accessible
+        logDebug('LocalFileService', `Network error checking access for ${path}, assuming accessible`);
+        return;
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get full tree for sidebar - loads full structure but children marked as not loaded
+   */
   async getFullTree(): Promise<FileNode[]> {
     const cacheKey = 'fullTree';
     logDebug('LocalFileService', 'getFullTree called');
@@ -82,13 +150,29 @@ export class LocalFileService {
         throw new Error('Failed to load file tree');
       }
 
-      const tree = this.convertToFileNodes(this.fileTree);
-      this.setCache(cacheKey, tree);
+      // For sidebar, return only directory structure (shallow)
+      const tree = this.convertToShallowFileNodes(this.fileTree);
+      this.setCache(cacheKey, tree, this.generateContentHash(tree));
       logInfo('LocalFileService', 'Full tree loaded and cached', { nodeCount: tree.length });
 
       return tree;
     } catch (error) {
       logError('LocalFileService', 'Error fetching full tree', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Load children for a specific directory (on-demand loading)
+   */
+  async loadDirectoryChildren(path: string): Promise<FileNode[]> {
+    logDebug('LocalFileService', 'loadDirectoryChildren called', { path });
+
+    try {
+      const items = await this.getDirectoryContents(path);
+      return items as FileNode[];
+    } catch (error) {
+      logError('LocalFileService', 'Error loading directory children', { error, path });
       throw error;
     }
   }
@@ -99,6 +183,10 @@ export class LocalFileService {
 
     try {
       const response = await fetch(url);
+
+      if (response.status === 403 || response.status === 401) {
+        throw new Error('Access denied: Permission denied');
+      }
 
       if (!response.ok) {
         throw new Error(`Failed to fetch file: ${response.status}`);
@@ -113,6 +201,92 @@ export class LocalFileService {
 
   getRawUrl(path: string): string {
     return this.getFileUrl(path);
+  }
+
+  /**
+   * Watch a directory for changes and call callback when detected
+   */
+  watchDirectory(path: string, callback: () => void): () => void {
+    const existingWatcher = this.watchers.get(path);
+    if (existingWatcher) {
+      // Update callback and return existing cleanup
+      existingWatcher.callback = callback;
+      return () => this.unwatchDirectory(path);
+    }
+
+    logInfo('LocalFileService', 'Starting directory watch', { path, interval: this.watchInterval });
+
+    const checkForChanges = async () => {
+      try {
+        // Invalidate cache to get fresh data
+        const cacheKey = `contents:${path}`;
+        const cached = this.cache.get(cacheKey);
+        const oldHash = cached?.hash || '';
+
+        // Fetch fresh content
+        this.cache.delete(cacheKey);
+        const items = await this.getDirectoryContents(path);
+        const newHash = this.generateContentHash(items);
+
+        if (oldHash && oldHash !== newHash) {
+          logInfo('LocalFileService', 'Directory change detected', { path, oldHash, newHash });
+          callback();
+        }
+
+        // Update watcher's lastHash
+        const watcher = this.watchers.get(path);
+        if (watcher) {
+          watcher.lastHash = newHash;
+        }
+      } catch (error) {
+        logError('LocalFileService', 'Error checking for directory changes', { error, path });
+      }
+    };
+
+    const intervalId = setInterval(checkForChanges, this.watchInterval);
+
+    const watcher: DirectoryWatcher = {
+      path,
+      callback,
+      intervalId,
+      lastHash: ''
+    };
+
+    this.watchers.set(path, watcher);
+
+    return () => this.unwatchDirectory(path);
+  }
+
+  /**
+   * Stop watching a directory
+   */
+  unwatchDirectory(path: string): void {
+    const watcher = this.watchers.get(path);
+    if (watcher) {
+      clearInterval(watcher.intervalId);
+      this.watchers.delete(path);
+      logInfo('LocalFileService', 'Stopped directory watch', { path });
+    }
+  }
+
+  /**
+   * Stop all directory watches
+   */
+  unwatchAll(): void {
+    this.watchers.forEach((watcher, path) => {
+      clearInterval(watcher.intervalId);
+      logDebug('LocalFileService', 'Stopped watching', { path });
+    });
+    this.watchers.clear();
+  }
+
+  /**
+   * Invalidate cache for a specific path and trigger refresh
+   */
+  invalidateCache(path: string): void {
+    const cacheKey = `contents:${path}`;
+    this.cache.delete(cacheKey);
+    logDebug('LocalFileService', 'Cache invalidated', { path });
   }
 
   private async loadFileTree(): Promise<void> {
@@ -138,6 +312,9 @@ export class LocalFileService {
     }
   }
 
+  /**
+   * Convert tree nodes with full children (for internal use)
+   */
   private convertToFileNodes(items: FileTreeNode[]): FileNode[] {
     return items.map(item => ({
       name: item.name,
@@ -147,7 +324,30 @@ export class LocalFileService {
       sha: this.generateHash(item.path),
       url: this.getFileUrl(item.path),
       downloadUrl: item.type === 'file' ? this.getFileUrl(item.path) : undefined,
-      children: item.children ? this.convertToFileNodes(item.children) : undefined
+      children: item.children ? this.convertToFileNodes(item.children) : undefined,
+      isAccessible: true,
+      childrenLoaded: false
+    }));
+  }
+
+  /**
+   * Convert tree nodes without loading children content (for sidebar lazy display)
+   */
+  private convertToShallowFileNodes(items: FileNode[]): FileNode[] {
+    return items.map(item => ({
+      name: item.name,
+      path: item.path,
+      type: item.type,
+      size: item.size,
+      sha: item.sha,
+      url: item.url,
+      downloadUrl: item.downloadUrl,
+      isAccessible: true,
+      childrenLoaded: false,
+      // For directories, include shallow children structure (names only) for sidebar
+      children: item.type === 'directory' && item.children
+        ? this.convertToShallowFileNodes(item.children)
+        : undefined
     }));
   }
 
@@ -210,6 +410,17 @@ export class LocalFileService {
     return Math.abs(hash).toString(16).padStart(8, '0');
   }
 
+  private generateContentHash(items: unknown[]): string {
+    const content = JSON.stringify(items.map(item => {
+      if (typeof item === 'object' && item !== null) {
+        const { name, path, type, size } = item as FileSystemItem;
+        return { name, path, type, size };
+      }
+      return item;
+    }));
+    return this.generateHash(content);
+  }
+
   private getFromCache<T>(key: string): T | null {
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
@@ -218,8 +429,8 @@ export class LocalFileService {
     return null;
   }
 
-  private setCache(key: string, data: unknown): void {
-    this.cache.set(key, { data, timestamp: Date.now() });
+  private setCache(key: string, data: unknown, hash: string = ''): void {
+    this.cache.set(key, { data, timestamp: Date.now(), hash });
   }
 
   clearCache(): void {

@@ -12,6 +12,7 @@ let lastEffectTime = Date.now();
  * Hook for loading data from local file service.
  * IMPORTANT: This hook should only be called ONCE in the app (in App.tsx or similar).
  * It handles automatic data loading when path/filter/sort changes.
+ * Also handles automatic refresh when directory contents change.
  */
 export function useLocalFilesLoader() {
   const currentPath = useExplorerStore((state) => state.currentPath);
@@ -24,6 +25,7 @@ export function useLocalFilesLoader() {
   const filter = useExplorerStore((state) => state.filter);
 
   const hasLoadedTreeRef = useRef(false);
+  const unwatchRef = useRef<(() => void) | null>(null);
 
   // Load directory when path changes
   useEffect(() => {
@@ -154,6 +156,115 @@ export function useLocalFilesLoader() {
     };
   }, [currentPath, filter.showHidden, filter.searchQuery, filter.fileTypes, sortField, sortOrder, setCurrentItems, setLoading, setError]);
 
+  // Watch current directory for changes and auto-refresh
+  useEffect(() => {
+    const localService = getLocalFileService();
+
+    // Cleanup previous watcher
+    if (unwatchRef.current) {
+      unwatchRef.current();
+      unwatchRef.current = null;
+    }
+
+    // Start watching current directory
+    const handleDirectoryChange = () => {
+      logInfo('useLocalFilesLoader', 'Directory changed, refreshing...', { currentPath });
+
+      // Invalidate cache and reload
+      localService.invalidateCache(currentPath);
+
+      // Trigger a reload by resetting loading state
+      // The effect above will pick up and reload
+      const reloadData = async () => {
+        const setLoading = useExplorerStore.getState().setLoading;
+        const setCurrentItems = useExplorerStore.getState().setCurrentItems;
+        const setError = useExplorerStore.getState().setError;
+        const { sortField, sortOrder, filter } = useExplorerStore.getState();
+
+        setLoading(true);
+
+        try {
+          const items = await localService.getDirectoryContents(currentPath);
+
+          const filteredItems = (items as FileNode[]).filter(item => {
+            if (!filter.showHidden) {
+              const hidden = HIDDEN_PATTERNS.some(pattern => {
+                if (typeof pattern === 'string') {
+                  return item.name === pattern || item.path.startsWith(pattern);
+                }
+                return pattern.test(item.name) || pattern.test(item.path);
+              });
+              if (hidden) return false;
+            }
+
+            if (filter.searchQuery) {
+              const query = filter.searchQuery.toLowerCase();
+              if (!item.name.toLowerCase().includes(query)) {
+                return false;
+              }
+            }
+
+            if (filter.fileTypes.length > 0 && item.type === 'file') {
+              const ext = item.name.split('.').pop()?.toLowerCase();
+              if (!ext || !filter.fileTypes.includes(ext)) {
+                return false;
+              }
+            }
+
+            return true;
+          });
+
+          const sortedItems = [...filteredItems].sort((a, b) => {
+            if (a.type !== b.type) {
+              return a.type === 'directory' ? -1 : 1;
+            }
+
+            let comparison = 0;
+            switch (sortField) {
+              case 'name':
+                comparison = a.name.localeCompare(b.name);
+                break;
+              case 'size':
+                comparison = (a.size || 0) - (b.size || 0);
+                break;
+              case 'type': {
+                const extA = a.name.split('.').pop() || '';
+                const extB = b.name.split('.').pop() || '';
+                comparison = extA.localeCompare(extB);
+                break;
+              }
+              default:
+                comparison = a.name.localeCompare(b.name);
+            }
+
+            return sortOrder === 'asc' ? comparison : -comparison;
+          });
+
+          setCurrentItems(sortedItems);
+          setLoading(false);
+          logInfo('useLocalFilesLoader', 'Auto-refresh completed', { itemCount: sortedItems.length });
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to refresh directory';
+          logError('useLocalFilesLoader', `Auto-refresh failed: ${errorMessage}`, { error });
+          setError(errorMessage);
+          setLoading(false);
+        }
+      };
+
+      reloadData();
+    };
+
+    unwatchRef.current = localService.watchDirectory(currentPath, handleDirectoryChange);
+    logDebug('useLocalFilesLoader', 'Started watching directory', { currentPath });
+
+    return () => {
+      if (unwatchRef.current) {
+        unwatchRef.current();
+        unwatchRef.current = null;
+      }
+    };
+  }, [currentPath]);
+
   // Load full tree once on mount
   useEffect(() => {
     const abortController = new AbortController();
@@ -206,6 +317,14 @@ export function useLocalFilesLoader() {
       abortController.abort();
     };
   }, [setFileTree]);
+
+  // Cleanup all watchers on unmount
+  useEffect(() => {
+    return () => {
+      const localService = getLocalFileService();
+      localService.unwatchAll();
+    };
+  }, []);
 }
 
 /**
@@ -296,6 +415,10 @@ export function useLocalFiles() {
 
     try {
       const localService = getLocalFileService();
+
+      // Invalidate cache to force fresh load
+      localService.invalidateCache(currentPath);
+
       const items = await localService.getDirectoryContents(currentPath);
       const filteredItems = filterItems(items as FileNode[]);
       const sortedItems = sortItems(filteredItems);

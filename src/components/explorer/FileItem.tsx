@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   File,
@@ -9,7 +9,9 @@ import {
   FileSpreadsheet,
   FileVideo,
   FileAudio,
-  Archive
+  Archive,
+  Lock,
+  ShieldOff
 } from 'lucide-react';
 import type { FileNode } from '@/types/file';
 import { useExplorerStore } from '@/store/useExplorerStore';
@@ -68,10 +70,12 @@ export const FileItem = memo(function FileItem({
 }: FileItemProps) {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   const { selectedItems, focusedItem } = useExplorerStore();
   const isSelected = selectedItems.has(item.path);
   const isFocused = focusedItem === item.path;
+  const isAccessible = item.isAccessible !== false;
 
   const extension = getFileExtension(item.name);
   const IconComponent = item.type === 'directory'
@@ -79,15 +83,38 @@ export const FileItem = memo(function FileItem({
     : FILE_ICONS[extension] || File;
 
   useEffect(() => {
-    if (!thumbnail && rawUrl && item.type === 'file') {
+    if (!thumbnail && rawUrl && item.type === 'file' && isAccessible) {
       thumbnailService.generateThumbnail(item, rawUrl).then(setThumbnail);
     }
-  }, [item, rawUrl, thumbnail]);
+  }, [item, rawUrl, thumbnail, isAccessible]);
+
+  const handleClick = useCallback(() => {
+    if (!isAccessible) {
+      setShowAccessDenied(true);
+      setTimeout(() => setShowAccessDenied(false), 2000);
+      return;
+    }
+    onClick();
+  }, [isAccessible, onClick]);
+
+  const handleDoubleClick = useCallback(() => {
+    if (!isAccessible) {
+      setShowAccessDenied(true);
+      setTimeout(() => setShowAccessDenied(false), 2000);
+      return;
+    }
+    onDoubleClick();
+  }, [isAccessible, onDoubleClick]);
 
   return (
     <Tooltip
       content={
-        thumbnail && isHovered ? (
+        showAccessDenied ? (
+          <div className="flex items-center gap-2 text-destructive">
+            <ShieldOff size={16} />
+            <span>{item.accessError || 'Access denied'}</span>
+          </div>
+        ) : thumbnail && isHovered ? (
           <img
             src={thumbnail}
             alt={item.name}
@@ -95,28 +122,32 @@ export const FileItem = memo(function FileItem({
           />
         ) : null
       }
-      enabled={!!thumbnail}
+      enabled={!!thumbnail || showAccessDenied}
     >
       <motion.div
         className={cn(
           'group flex flex-col items-center p-3 rounded-lg cursor-pointer',
           'transition-colors duration-150',
+          'w-[120px] flex-shrink-0',  // Fixed width for grid items
           isSelected && 'bg-primary/20',
           isFocused && 'ring-2 ring-primary',
-          !isSelected && 'hover:bg-muted'
+          !isSelected && !isAccessible && 'hover:bg-destructive/10',
+          !isSelected && isAccessible && 'hover:bg-muted',
+          !isAccessible && 'opacity-70'
         )}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: isAccessible ? 1.02 : 1 }}
+        whileTap={{ scale: isAccessible ? 0.98 : 1 }}
         tabIndex={0}
         role="button"
         aria-selected={isSelected}
+        aria-disabled={!isAccessible}
       >
-        <div className="relative w-20 h-20 flex items-center justify-center mb-2">
-          {thumbnail ? (
+        <div className="relative w-16 h-16 flex items-center justify-center mb-2">
+          {thumbnail && isAccessible ? (
             <img
               src={thumbnail}
               alt={item.name}
@@ -125,17 +156,31 @@ export const FileItem = memo(function FileItem({
           ) : (
             <IconComponent
               className={cn(
-                'w-12 h-12',
-                item.type === 'directory' ? 'text-amber-500' : 'text-muted-foreground'
+                'w-10 h-10',
+                item.type === 'directory' ? 'text-amber-500' : 'text-muted-foreground',
+                !isAccessible && 'text-muted-foreground/50'
               )}
             />
           )}
+
+          {/* Access denied overlay icon */}
+          {!isAccessible && (
+            <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 shadow-sm border border-border">
+              <Lock
+                size={14}
+                className="text-destructive"
+              />
+            </div>
+          )}
         </div>
 
+        {/* File name with 2-line clamp and ellipsis */}
         <span
           className={cn(
-            'text-sm text-center truncate w-full px-1',
-            isSelected && 'font-medium'
+            'text-xs text-center w-full px-1 leading-tight',
+            'line-clamp-2 break-words',  // 2-line clamp with word break
+            isSelected && 'font-medium',
+            !isAccessible && 'text-muted-foreground'
           )}
           title={item.name}
         >
@@ -143,9 +188,27 @@ export const FileItem = memo(function FileItem({
         </span>
 
         {item.type === 'file' && item.size !== undefined && (
-          <span className="text-xs text-muted-foreground mt-1">
+          <span className={cn(
+            'text-[10px] mt-1',
+            isAccessible ? 'text-muted-foreground' : 'text-muted-foreground/50'
+          )}>
             {formatFileSize(item.size)}
           </span>
+        )}
+
+        {/* Show access denied indicator when clicked */}
+        {showAccessDenied && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 flex items-center justify-center bg-destructive/20 rounded-lg"
+          >
+            <div className="flex items-center gap-1 text-destructive text-xs font-medium">
+              <ShieldOff size={12} />
+              <span>Access Denied</span>
+            </div>
+          </motion.div>
         )}
       </motion.div>
     </Tooltip>
