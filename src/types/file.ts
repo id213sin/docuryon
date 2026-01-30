@@ -7,6 +7,8 @@ export interface FileSystemItem {
   url: string;
   downloadUrl?: string;
   lastModified?: string;
+  isAccessible?: boolean;  // false if read permission denied
+  accessError?: string;    // error message when access denied
 }
 
 export interface FileNode extends FileSystemItem {
@@ -14,6 +16,7 @@ export interface FileNode extends FileSystemItem {
   isExpanded?: boolean;
   isLoading?: boolean;
   thumbnail?: string;
+  childrenLoaded?: boolean;  // true if children have been loaded (for lazy loading)
 }
 
 export type ViewMode = 'grid' | 'list' | 'details';

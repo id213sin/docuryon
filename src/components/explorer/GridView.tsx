@@ -12,7 +12,7 @@ export function GridView({ items, onItemClick, onItemDoubleClick }: GridViewProp
   const { getRawUrl } = useLocalFiles();
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
+    <div className="grid grid-cols-[repeat(auto-fill,120px)] gap-2 justify-start">
       {items.map(item => (
         <FileItem
           key={item.path}
