@@ -30,8 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build (static mode for GitHub Pages)
+        run: npm run build:static
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
